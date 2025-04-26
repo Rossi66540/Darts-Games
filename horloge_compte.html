@@ -46,8 +46,8 @@
 
             </div>
             <div id="divCancel">
-                <button class= style="background-color:red;" onclick="annulerScore()">
-                    
+                <button class=style="background-color:red;" onclick="annulerScore()">
+
                     <i class="fa-solid fa-rotate-left"></i>
                 </button>
             </div>
@@ -125,18 +125,22 @@
 
         function ajouteLigne() {
             scoreActuel++;
-            let scoreStr = scoreActuel;
-            if (scoreActuel == 21) {
-                scoreStr = "Bulle";
-            }
-            console.log(joueurs);
-            let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
-            joueurs.forEach(function (joueur, index) {
-                htmlLigne += "<td id='score_" + scoreActuel + "_" + (index) + "'></td>";
-            });
+            if (scoreActuel == 22) {
+                alert('FIN DE LA PARTIE !');
+            } else {
+                let scoreStr = scoreActuel;
+                if (scoreActuel == 21) {
+                    scoreStr = "Bulle";
+                }
+                console.log(joueurs);
+                let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
+                joueurs.forEach(function (joueur, index) {
+                    htmlLigne += "<td id='score_" + scoreActuel + "_" + (index) + "'></td>";
+                });
 
-            htmlLigne += "</tr>";
-            $('#tableScore tbody').append(htmlLigne);
+                htmlLigne += "</tr>";
+                $('#tableScore tbody').append(htmlLigne);
+            }
 
         }
 
@@ -155,6 +159,11 @@
             $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
             $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append('<label class="saisie"></label>');
             afficheDivSaisiePossible();
+        }
+
+        function finDuJeu() {
+            alert("La partie est terminée !");
+            // Tu peux ici désactiver les boutons, afficher un message final, etc.
         }
 
         function afficheDivSaisiePossible() {
