@@ -127,6 +127,8 @@
             scoreActuel++;
             if (scoreActuel == 22) {
                 alert('FIN DE LA PARTIE !');
+                cacheDivSaisiePossible();
+
             } else {
                 let scoreStr = scoreActuel;
                 if (scoreActuel == 21) {
@@ -161,11 +163,7 @@
             afficheDivSaisiePossible();
         }
 
-        function finDuJeu() {
-            alert("La partie est terminée !");
-            // Tu peux ici désactiver les boutons, afficher un message final, etc.
-        }
-
+        
         function afficheDivSaisiePossible() {
             $('#scorePossible').empty();
             let tabScore = saisieNormale;
@@ -178,7 +176,10 @@
                 html += "<button class='buttonScore' onclick='saisieScore(" + sc + ")'>" + sc + "</button>";
             });
             $('#scorePossible').append(html);
+        }
 
+        function cacheDivSaisiePossible(){
+            $('#divScore').hide();
         }
 
 
