@@ -13,13 +13,13 @@
     <script src="./libs/jquery3.7.js"></script>
 
     <h1> Horloge Comptée </h1>
-    <button onclick="afficherRegles()"> Voir les règles </button>
+    <CENTER><button onclick="afficherRegles()"> Voir les règles </button></CENTER>
 
     <div id="entete">
         <h3>Nouvelle Partie:</h3>
 
         <label>Nombre Joueurs :</label>
-        <input id="nbJrs" type="number" onchange="genererTableauNom()" />
+        <input id="nbJrs" style="width:60px;" type="number" onchange="genererTableauNom()" />
 
         <table id="tableJoueurs">
             <tbody></tbody>
@@ -105,7 +105,7 @@
             $('#tableJoueurs').empty();
 
             for (i = 1; i <= nbrJrs; i++) {
-                let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" id="in_pseudo_' + i + '"/></td></tr>';
+                let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" style="width:150px;" id="in_pseudo_' + i + '"/></td></tr>';
                 $('#tableJoueurs').append(html);
             }
             $('#in_pseudo_1').focus();
@@ -142,7 +142,7 @@
             joueurs.forEach(function (joueur, index) {
                 enteteHtml += "<td>" + joueur + "</td>";
                 // bodyHtmlDebut += "<td id='score_" + score_actuel + "_" + index + "'></td>";
-                totauxHtml += '<td><label id="total_' + index + '"></label></td>';
+                totauxHtml += '<td><label class="total" id="total_' + index + '"></label></td>';
             });
             enteteHtml += "</tr>";
 
@@ -189,7 +189,11 @@
         function setCaseSuivante() {
             //enleve la case actuelle
             $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
-            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append("<label class='resultat'>" + resultats[indiceJoueurActuel][scoreActuel] + "</label>");
+            let color = "#2ecc71";
+            if(resultats[indiceJoueurActuel][scoreActuel] == 0){
+                color ="red";
+            }
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append("<label style='color:"+color+"'  class='resultat'>" + resultats[indiceJoueurActuel][scoreActuel] + "</label>");
 
             if (indiceJoueurActuel == (joueurs.length - 1)) {
                 ajouteLigne();

@@ -76,6 +76,13 @@ button:hover {
 label.resultat {
     font-weight: bold;
     color: #2ecc71;
+    font-size:25px;
+}
+
+label.total {
+    font-weight: bold;
+    color: #2ecc71;
+    font-size:25px;
 }
 
 label.saisie {
@@ -86,6 +93,7 @@ label.saisie {
 .objectif {
     background-color: #f9f9f9;
     font-weight: bold;
+    font-size:25px;
 }
 
 .hide {
