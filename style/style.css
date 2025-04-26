@@ -121,3 +121,9 @@ label.saisie {
     color: #007BFF;
     font-size: 16px;
 }
+
+#entete table td:first-child,
+#tableScore td:first-child,
+#tableScore th:first-child {
+    width: 80px; /* ou une valeur encore plus petite selon ton besoin */
+}

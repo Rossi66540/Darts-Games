@@ -13,6 +13,7 @@
     <script src="./libs/jquery3.7.js"></script>
 
     <h1> Horloge Comptée </h1>
+    <button onclick="afficherRegles()"> Voir les règles </button>
 
     <div id="entete">
         <h3>Nouvelle Partie:</h3>
@@ -30,8 +31,40 @@
     </div>
 
     <div id="regle" class="hide">
-        <h3>Régle</h3>
-        <span> BLA BLA EXPLICATION REGLE </span>
+        <h3>Régle :</h3>
+        <span>
+            <p>L'Horloge Comptée est un jeu d'adresse qui vous fait viser toutes les zones de la cible.</p>
+    
+            <p>Vous avez 21 lancers de 3 fléchettes chacun. Chaque lancer comporte trois fléchettes. Pour le premier lancer, vous devez viser le chiffre 1, pour le second, le chiffre 2, et ainsi de suite.</p>
+    
+            <p>Concernant le comptage des points :
+                <ul>
+                    <li>La zone simple vaut 1 point,</li>
+                    <li>La zone des doubles vaut 2 points,</li>
+                    <li>La zone des triples vaut 3 points,</li>
+                    <li>Et cela, quel que soit le tour où vous êtes.</li>
+                </ul>
+            </p>
+    
+            <p>Un exemple pour mieux comprendre :
+                <br>Tour n°1, vous devez viser le numéro 1. 
+                <br>Première fléchette : vous faites double 1 (2 points), 
+                <br>Deuxième fléchette : 1 simple (1 point),
+                <br>Troisième fléchette : vous tombez dans le 20 (0 point).
+                <br>Vous marquez donc 2 + 1 + 0 = 3 points. Vous cliquerez alors sur le chiffre 3.
+            </p>
+    
+            <p>Petite particularité concernant la bulle :
+                <ul>
+                    <li>Une demi-bulle vaut 2 points,</li>
+                    <li>Une double-bulle vaut 4 points.</li>
+                </ul>
+            </p>
+    
+            <p>Bonne partie à vous !</p>
+        </span>
+
+        <button onclick="cacherRegles()"> Bien Compris, tu peux cacher les règles ! </button>
     </div>
 
     <div id="contenu" class="hide">
@@ -46,8 +79,7 @@
 
             </div>
             <div id="divCancel">
-                <button class=style="background-color:red;" onclick="annulerScore()">
-
+                <button style="background-color:red;height: 70px; width: 70px;" onclick="annulerScore()">
                     <i class="fa-solid fa-rotate-left"></i>
                 </button>
             </div>
@@ -144,6 +176,14 @@
                 $('#tableScore tbody').append(htmlLigne);
             }
 
+        }
+        
+        function afficherRegles(){
+            $('#regle').show();
+        }
+
+        function cacherRegles(){
+            $('#regle').hide();
         }
 
         function setCaseSuivante() {
