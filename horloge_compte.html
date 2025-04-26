@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Horloge Comptée</title>
+    <link rel="stylesheet" href="./style/style.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <script src="./libs/jquery3.7.js"></script>
+
+    <h1> Horloge Comptée </h1>
+
+    <div id="entete">
+        <h3>Nouvelle Partie:</h3>
+
+        <label>Nombre Joueurs :</label>
+        <input id="nbJrs" type="number" onchange="genererTableauNom()" />
+
+        <table id="tableJoueurs">
+            <tbody></tbody>
+        </table>
+
+
+
+        <button onclick="lancerPartie()"> LANCER PARTIE </button>
+    </div>
+
+    <div id="regle" class="hide">
+        <h3>Régle</h3>
+        <span> BLA BLA EXPLICATION REGLE </span>
+    </div>
+
+    <div id="contenu" class="hide">
+        <table id="tableScore">
+            <thead></thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+        </table>
+
+        <div id="divScore">
+            <div id="scorePossible">
+
+            </div>
+            <div id="divCancel">
+                <button class= style="background-color:red;" onclick="annulerScore()">
+                    
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        var saisieNormale = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        var saisieBulle = [0, 2, 4, 6, 8, 10, 12];
+
+        var joueurs = [];
+        var resultats = [];
+        var totaux = [];
+
+        var scoreActuel = 0;
+        var indiceJoueurActuel = 0;
+
+        function genererTableauNom() {
+            let nbrJrs = $('#nbJrs').val();
+            $('#tableJoueurs').empty();
+
+            for (i = 1; i <= nbrJrs; i++) {
+                let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" id="in_pseudo_' + i + '"/></td></tr>';
+                $('#tableJoueurs').append(html);
+            }
+            $('#in_pseudo_1').focus();
+        }
+
+        function lancerPartie() {
+            //cache entete
+            $('#entete').hide();
+            //affichage contenu
+            $('#contenu').show();
+
+            //tirage au sort des joueurs
+            // Vide le tableau des joueurs
+            joueurs = [];
+
+            // Récupère tous les pseudos
+            $('.pseudo').each(function () {
+                let pseudo = $(this).val().trim();
+                if (pseudo !== "") {
+                    joueurs.push(pseudo);
+                }
+            });
+
+            // Mélange aléatoirement les joueurs (algorithme de Fisher-Yates)
+            for (let i = joueurs.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [joueurs[i], joueurs[j]] = [joueurs[j], joueurs[i]];
+            }
+
+
+            let enteteHtml = "<tr><td></td>";
+            //let bodyHtmlDebut = "<tr><td></td>";
+            let totauxHtml = "<tr><td>Total</td>";
+            joueurs.forEach(function (joueur, index) {
+                enteteHtml += "<td>" + joueur + "</td>";
+                // bodyHtmlDebut += "<td id='score_" + score_actuel + "_" + index + "'></td>";
+                totauxHtml += '<td><label id="total_' + index + '"></label></td>';
+            });
+            enteteHtml += "</tr>";
+
+            $('#tableScore thead').append(enteteHtml);
+            //$('#tableScore tbody').append(bodyHtmlDebut);
+            $('#tableScore tfoot').append(totauxHtml);
+
+            //$('#score_1_1').append()
+            ajouteLigne();
+            afficheDivSaisiePossible();
+        }
+
+        function ajouteLigne() {
+            scoreActuel++;
+            let scoreStr = scoreActuel;
+            if (scoreActuel == 21) {
+                scoreStr = "Bulle";
+            }
+            console.log(joueurs);
+            let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
+            joueurs.forEach(function (joueur, index) {
+                htmlLigne += "<td id='score_" + scoreActuel + "_" + (index) + "'></td>";
+            });
+
+            htmlLigne += "</tr>";
+            $('#tableScore tbody').append(htmlLigne);
+
+        }
+
+        function setCaseSuivante() {
+            //enleve la case actuelle
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append("<label class='resultat'>" + resultats[indiceJoueurActuel][scoreActuel] + "</label>");
+
+            if (indiceJoueurActuel == (joueurs.length - 1)) {
+                ajouteLigne();
+                indiceJoueurActuel = 0;
+            } else {
+                indiceJoueurActuel++;
+            }
+
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append('<label class="saisie"></label>');
+            afficheDivSaisiePossible();
+        }
+
+        function afficheDivSaisiePossible() {
+            $('#scorePossible').empty();
+            let tabScore = saisieNormale;
+            if (scoreActuel == 21) {
+                tabScore = saisieBulle;
+            }
+
+            let html = "";
+            tabScore.forEach(function (sc) {
+                html += "<button class='buttonScore' onclick='saisieScore(" + sc + ")'>" + sc + "</button>";
+            });
+            $('#scorePossible').append(html);
+
+        }
+
+
+        function saisieScore(valeur) {
+            if (resultats[indiceJoueurActuel] == undefined) {
+                resultats[indiceJoueurActuel] = [];
+            }
+            if (resultats[indiceJoueurActuel][scoreActuel] == undefined) {
+                resultats[indiceJoueurActuel][scoreActuel] = 0;
+            }
+            resultats[indiceJoueurActuel][scoreActuel] = valeur;
+
+            if (totaux[indiceJoueurActuel] == undefined) {
+                totaux[indiceJoueurActuel] = 0;
+            }
+            totaux[indiceJoueurActuel] += valeur;
+            setCaseSuivante();
+            actualiseTotal();
+        }
+
+        function actualiseTotal() {
+            joueurs.forEach(function (joueur, index) {
+                $('#total_' + index).text(totaux[index]);
+            });
+        }
+
+        function annulerScore() {
+            // Si on est tout au début, rien à annuler
+            if (scoreActuel === 1 && indiceJoueurActuel === 0) {
+                return;
+            }
+
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
+
+            // Si on est au début d'une ligne (premier joueur)
+            if (indiceJoueurActuel === 0) {
+                // Supprimer la dernière ligne du tableau
+                $('#tableScore tbody tr:last-child').remove();
+
+                // Revenir à la ligne précédente
+                scoreActuel--;
+
+                // Se placer sur le dernier joueur
+                indiceJoueurActuel = joueurs.length - 1;
+            } else {
+                // Sinon juste reculer au joueur précédent
+                indiceJoueurActuel--;
+            }
+
+            // Retirer la valeur saisie du total
+            let valeurAnnulee = resultats[indiceJoueurActuel][scoreActuel] || 0;
+            totaux[indiceJoueurActuel] -= valeurAnnulee;
+
+            // Supprimer la valeur dans le tableau des résultats
+            delete resultats[indiceJoueurActuel][scoreActuel];
+
+            // Mettre à jour l'affichage du total
+            actualiseTotal();
+
+            // Effacer l'affichage de la cellule de score
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
+
+            // Mettre une case vide pour resaisir
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append('<label class="saisie"></label>');
+
+            // Rafraîchir les boutons de saisie possibles
+            afficheDivSaisiePossible();
+        }
+
+    </script>
+
+</body>
+
+</html>
