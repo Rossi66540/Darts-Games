@@ -1,0 +1,123 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8;
+    margin: 20px;
+    color: #333;
+
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+#entete, #regle, #contenu {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#entete table,
+#tableScore {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#entete table td,
+#tableScore td,
+#tableScore th {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+#entete input[type="number"],
+.pseudo {
+    padding: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.buttonScore {
+    font-size: 1.5em;
+    padding: 1em 2em;
+    margin: 5px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buttonScore:hover {
+    background-color: #2980b9;
+}
+
+label.resultat {
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+label.saisie {
+    font-weight: bold;
+    color: #e67e22;
+}
+
+.objectif {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+}
+
+#scorePossible {
+    text-align: center;
+    flex:6;
+}
+
+#divScore {
+    margin-top: 30px;
+    display:flex;
+    flex-direction:row;
+}
+
+#divCancel{
+    flex:1;    
+}
+
+.saisie {
+    display: inline-block;
+    width: 40px;
+    height: 30px;
+    border: 2px solid #007BFF; /* Bleu vif */
+    border-radius: 5px;
+    background-color: #E6F0FF; /* Bleu très clair */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    color: #007BFF;
+    font-size: 16px;
+}
