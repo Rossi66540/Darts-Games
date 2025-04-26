@@ -74,7 +74,7 @@
             <tfoot></tfoot>
         </table>
 
-        <div id="divScore">
+        <div id="divScore" >
             <div id="scorePossible">
 
             </div>
@@ -84,7 +84,11 @@
                 </button>
             </div>
         </div>
+    </div>
 
+    <div id="divFin" class="hide">
+        <button onclick="window.location.href='index.html'"> Faire un autre Jeu </button>
+        <button onclick="location.reload()"> Rejouer à l'horloge comptée </button>
     </div>
 
 
@@ -160,6 +164,7 @@
             if (scoreActuel == 22) {
                 alert('FIN DE LA PARTIE !');
                 cacheDivSaisiePossible();
+                $('#divFin').show();
 
             } else {
                 let scoreStr = scoreActuel;

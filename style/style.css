@@ -11,7 +11,7 @@ h1 {
     color: #2c3e50;
 }
 
-#entete, #regle, #contenu {
+#entete, #regle, #contenu, #divFin {
     margin: 20px auto;
     max-width: 800px;
     padding: 20px;
