@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style/style.css" />
+    <title>Moprion</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        #startScreen,
+        #gameContainer {
+            display: none;
+        }
+
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .cell {
+            border: 2px solid black;
+            font-size: 24px;
+            position: relative;
+            background: #f2f2f2;
+        }
+
+        .cell-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .buttons {
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .buttons .action-btn {
+            font-size: 20px;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: #2980b9;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+        }
+
+        .action-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        .action-btn:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .case-btns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+
+        }
+
+
+        #currentTeam {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        input[type="text"] {
+            font-size: 18px;
+            padding: 8px;
+            margin: 10px;
+        }
+
+        button.start-btn {
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+
+        #grid-container {
+            position: relative;
+            width: max-content;
+            margin: auto;
+        }
+
+        #grid {
+            position: relative;
+            z-index: 1;
+        }
+
+        #winLine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .line {
+            position: absolute;
+            background-color: red;
+            height: 5px;
+            width: 100%;
+            transform-origin: center;
+            transform: rotate(0deg);
+            top: 50%;
+            left: 0;
+        }
+
+        .teamO {
+            color: blue;
+            font-size: 30px;
+        }
+
+        .teamX {
+            color: red;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Jeu du Morpion - Points Visuels</h1>
+
+    <div id="startScreen">
+        <h2>Configuration des équipes</h2>
+
+        <div>
+            <label>Nombre de joueurs par équipe :</label>
+            <select id="numPlayers" onchange="generatePlayerInputs()">
+
+                <option value="0"> - - - </option>
+                <option value="1">1 joueur</option>
+                <option value="2">2 joueurs</option>
+                <option value="3">3 joueurs</option>
+            </select>
+        </div>
+
+        <div style="display:flex;justify-content:center;">
+            <div id="teamXInputs">
+                <h3></h3>
+            </div>
+
+            <div id="teamOInputs">
+                <h3></h3>
+            </div>
+        </div>
+
+        <button class="start-btn" onclick="startGame()">Démarrer la partie</button>
+    </div>
+
+    <div id="gameContainer">
+        <div id="currentTeam"></div>
+        <div id="grid-container">
+            <div id="grid"></div>
+            <div id="winLine"></div>
+        </div>
+
+        <div class="buttons">
+            <div>
+                <button class="action-btn active" data-action="1" onclick="setAction(1)">Simple</button>
+                <button class="action-btn" data-action="2" onclick="setAction(2)">Double</button>
+                <button class="action-btn" data-action="3" onclick="setAction(3)">Triple</button>
+            </div>
+
+            <div class="case-btns" id="caseButtons"></div>
+            <div style="margin-top: 20px;">
+                <button class="action-btn" onclick="passerSansPoint()">0</button>
+                <button class="action-btn" onclick="annulerDernierLancer()">Annuler le dernier lancer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const caseButtons = document.getElementById('caseButtons');
+        let currentAction = 1; // 1 -> Simple, 2 -> Double, 3 -> Triple
+        let currentTeam = 'X';
+        let cellScores = {};
+        let teams = {
+            X: 'Équipe X',
+            O: 'Équipe O'
+        };
+        let historyStack = []; // Pour enregistrer les lancers
+
+
+        let players = { X: [], O: [] };
+        let playerIndices = { X: 0, O: 0 };
+        let currentPlayer = ''; // Le nom du joueur en cours
+        let currentPlayerThrows = 0;
+
+        let playerTurnIndex = 0;
+        let playerThrowCount = 0;
+
+        function showCurrentTeam() {
+            let lancerDisplay = '●'.repeat(currentPlayerThrows) + '○'.repeat(3 - currentPlayerThrows);
+            document.getElementById('currentTeam').innerHTML =
+                `<strong>Tour de : </strong> ${currentPlayer} (${currentTeam === 'X' ? '<Equipe Croix>' : 'Equipe Rond'})<br>
+                 <span>Lancers : ${lancerDisplay}</span>`;
+        }
+
+        function generatePlayerInputs() {
+            const numPlayers = parseInt(document.getElementById('numPlayers').value);
+            const teamXInputs = document.getElementById('teamXInputs');
+            const teamOInputs = document.getElementById('teamOInputs');
+
+            // Nettoyer les anciens champs (tout sauf le titre)
+            teamXInputs.innerHTML = '<h3>Équipe Croix </h3>';
+            teamOInputs.innerHTML = '<h3>Équipe Rond </h3>';
+
+            for (let i = 0; i < numPlayers; i++) {
+                const inputX = document.createElement('input');
+                inputX.type = 'text';
+                inputX.placeholder = `Joueur ${i + 1}`;
+                inputX.className = 'playerX';
+                inputX.required = true;
+
+                const inputO = document.createElement('input');
+                inputO.type = 'text';
+                inputO.placeholder = `Joueur ${i + 1}`;
+                inputO.className = 'playerO';
+                inputO.required = true;
+
+                teamXInputs.appendChild(inputX);
+                teamOInputs.appendChild(inputO);
+            }
+        }
+
+        function startGame() {
+
+            const playersX = Array.from(document.querySelectorAll('.playerX')).map(input => input.value.trim());
+            const playersO = Array.from(document.querySelectorAll('.playerO')).map(input => input.value.trim());
+
+            if (playersX.includes('') || playersO.includes('')) {
+                alert("Veuillez remplir tous les noms de joueurs !");
+                return;
+            }
+
+            teams.X = playersX.join(', ');
+            teams.O = playersO.join(', ');
+            players.X = playersX;
+            players.O = playersO;
+            playerIndices.X = 0;
+            playerIndices.O = 0;
+            currentPlayerThrows = 0;
+            currentPlayer = players[currentTeam][playerIndices[currentTeam]];
+
+            playerTurnIndex = 0;
+            playerThrowCount = 0;
+
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+
+            initGrid();
+            showCurrentTeam();
+        }
+
+        function getCurrentPlayerTeam() {
+            const team = (playerTurnIndex % 2 === 0) ? 'X' : 'O';
+            const playerIndex = Math.floor(playerTurnIndex / 2);
+            const playerName = (team === 'X') ? playersX[playerIndex] : playersO[playerIndex];
+            return { team, name: playerName };
+        }
+
+        function initGrid() {
+            grid.innerHTML = '';
+            caseButtons.innerHTML = '';
+
+            // Générer une liste de 8 nombres aléatoires uniques entre 1 et 20
+            let numbers = [];
+            while (numbers.length < 8) {
+                let n = Math.floor(Math.random() * 20) + 1;
+                if (!numbers.includes(n)) {
+                    numbers.push(n);
+                }
+            }
+
+            let bIndex = 4; // Placer le "B" au centre (index 4)
+            cellScores = [];
+
+            for (let i = 0, numberIndex = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.id = 'cell' + i;
+
+                const content = document.createElement('div');
+                content.className = 'cell-content';
+
+                let value;
+                if (i === bIndex) {
+                    value = 'B'; // Le "B" sera toujours au centre
+                } else {
+                    value = numbers[numberIndex++];
+                }
+
+                let htmlTemp = '<div class="score" id="scoreDiv' + i + '" style="height:100%;" ><div class="teamO top" style="height:33%;"></div>';
+                htmlTemp += '<div class="number" style="height:33%;" id="number_score_' + i + '">' + value + '</div>';
+                htmlTemp += '<div class="teamX bottom" style="height:33%;"></div>';
+                htmlTemp += '</div>';
+
+
+                content.innerHTML = htmlTemp;
+
+                cell.appendChild(content);
+                grid.appendChild(cell);
+
+                cellScores[i] = { X: 0, O: 0 };
+
+                const btn = document.createElement('button');
+                btn.className = "buttonScore";
+                btn.textContent = value;
+                btn.onclick = () => applyToCell(i);
+                caseButtons.appendChild(btn);
+            }
+        }
+        function setAction(value) {
+            currentAction = value;
+
+            // Désélectionner tous les boutons d'action
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Sélectionner le bouton cliqué
+            const selectedButton = document.querySelector(`.action-btn[data-action="${value}"]`);
+            selectedButton.classList.add('active');
+        }
+
+        function applyToCell(index) {
+            // Sauvegarde avant modification pour permettre l'annulation
+            historyStack.push({
+                index,
+                team: currentTeam,
+                action: currentAction,
+                player: currentPlayer,
+                throws: currentPlayerThrows
+            });
+
+            cellScores[index][currentTeam] += currentAction;
+            updateCellDisplay(index);
+            checkCellOwnership(index);
+
+            currentPlayerThrows++;
+
+            if (currentPlayerThrows >= 3) {
+                currentPlayerThrows = 0;
+
+                // Passer au joueur suivant de la même équipe
+                playerIndices[currentTeam]++;
+                if (playerIndices[currentTeam] >= players[currentTeam].length) {
+                    playerIndices[currentTeam] = 0;
+                }
+
+                // Changer d'équipe
+                currentTeam = (currentTeam === 'X') ? 'O' : 'X';
+                currentPlayer = players[currentTeam][playerIndices[currentTeam]];
+            }
+            setAction(1);
+
+            showCurrentTeam();
+        }
+
+        function passerSansPoint() {
+            historyStack.push({
+                index: null,
+                team: currentTeam,
+                action: 0,
+                player: currentPlayer,
+                throws: currentPlayerThrows
+            });
+
+            currentPlayerThrows++;
+
+            if (currentPlayerThrows >= 3) {
+                currentPlayerThrows = 0;
+
+                playerIndices[currentTeam]++;
+                if (playerIndices[currentTeam] >= players[currentTeam].length) {
+                    playerIndices[currentTeam] = 0;
+                }
+
+                currentTeam = (currentTeam === 'X') ? 'O' : 'X';
+                currentPlayer = players[currentTeam][playerIndices[currentTeam]];
+            }
+
+            showCurrentTeam();
+        }
+
+        function annulerDernierLancer() {
+            if (historyStack.length === 0) {
+                alert("Aucun lancer à annuler.");
+                return;
+            }
+
+            const last = historyStack.pop();
+
+            // Revenir à l'état précédent
+            currentTeam = last.team;
+            currentPlayer = last.player;
+            currentPlayerThrows = last.throws;
+
+            if (last.index !== null) {
+                // Retirer les points
+                cellScores[last.index][currentTeam] -= last.action;
+                updateCellDisplay(last.index);
+            }
+
+            showCurrentTeam();
+        }
+
+        function updateCellDisplay(index) {
+            const scoreDiv = document.getElementById('scoreDiv' + index);
+            const scores = cellScores[index];
+
+            // Récupérer le numéro qui est déjà dans la cellule
+            const cellNumber = document.getElementById('number_score_' + index).textContent;// document.getElementById('cell' + index).querySelector('.cell-content div').textContent;
+
+            // Mettre à jour la structure HTML pour que le numéro et les scores soient dans la div "score"
+            scoreDiv.innerHTML =
+                `<div class="teamO top" style="height:33%;">${'O'.repeat(scores.O)}</div>` + // Ronds en haut
+                `<div class="number" style="height:33%;" id="number_score_${index}">${cellNumber}</div>` +              // Numéro au centre
+                `<div class="teamX bottom" style="height:33%;">${'✖'.repeat(scores.X)}</div>`; // Croix en bas
+        }
+
+
+        function checkCellOwnership(index) {
+            const scores = cellScores[index];
+            if (scores.X >= 3) {
+                const cell = document.getElementById('cell' + index);
+                cell.innerHTML = '<div class="cell-content">✖</div>';
+                cell.dataset.winner = 'X';
+                checkVictory('X');
+            } else if (scores.O >= 3) {
+                const cell = document.getElementById('cell' + index);
+                cell.innerHTML = '<div class="cell-content">O</div>';
+                cell.dataset.winner = 'O';
+                checkVictory('O');
+            }
+        }
+
+        function checkVictory(team) {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // lignes
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // colonnes
+                [0, 4, 8], [2, 4, 6]             // diagonales
+            ];
+
+            for (const pattern of winPatterns) {
+                if (pattern.every(index => {
+                    const cell = document.getElementById('cell' + index);
+                    return cell.dataset.winner === team;
+                })) {
+                    alert(`Victoire de l'équipe ${team === 'X' ? 'Croix' : 'Rond'} !`);
+
+                    drawWinLine(pattern);
+                    break;
+                }
+            }
+        }
+
+        function drawWinLine(pattern) {
+            const cell0 = document.getElementById('cell' + pattern[0]);
+            const cell2 = document.getElementById('cell' + pattern[2]);
+
+            const rect1 = cell0.getBoundingClientRect();
+            const rect2 = cell2.getBoundingClientRect();
+            const gridRect = document.getElementById('grid').getBoundingClientRect();
+
+            const x1 = rect1.left + rect1.width / 2 - gridRect.left;
+            const y1 = rect1.top + rect1.height / 2 - gridRect.top;
+            const x2 = rect2.left + rect2.width / 2 - gridRect.left;
+            const y2 = rect2.top + rect2.height / 2 - gridRect.top;
+
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            const length = Math.hypot(x2 - x1, y2 - y1);
+
+            const line = document.createElement('div');
+            line.className = 'line';
+            line.style.width = `${length}px`;
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.left = `${x1}px`;
+            line.style.top = `${y1}px`;
+
+            document.getElementById('winLine').appendChild(line);
+        }
+
+        function endGame() {
+            // Désactiver tous les boutons de case
+            const allButtons = caseButtons.querySelectorAll('button');
+            allButtons.forEach(btn => btn.disabled = true);
+
+            document.getElementById('currentTeam').innerHTML = '<strong>Partie terminée !</strong>';
+        }
+
+        function toggleTeam() {
+            currentTeam = (currentTeam === 'X') ? 'O' : 'X';
+        }
+
+        // Initialisation : mettre "Simple" comme sélectionné par défaut
+        window.onload = () => {
+            document.getElementById('startScreen').style.display = 'block';
+
+            // Initialiser "Simple" comme sélectionné
+            setAction(1);
+        };
+    </script>
+
+</body>
+
+</html>
