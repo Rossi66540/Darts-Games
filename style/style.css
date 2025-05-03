@@ -13,7 +13,8 @@ h1 {
 
 #entete, #regle, #contenu, #divFin {
     margin: 20px auto;
-    max-width: 800px;
+    /* max-width: 800px; */
+    max-width: 100%;
     padding: 20px;
     background-color: white;
     border-radius: 12px;
@@ -47,7 +48,7 @@ button {
     border: none;
     color: white;
     padding: 10px 16px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
@@ -142,3 +143,27 @@ select{
   height: 35px;
   width: 100px;
 }
+
+.flexColumn{
+    display:flex;
+    flex-direction:column;
+}
+
+.buttonMode{
+    font-size: 1.5em;
+    padding: 1em 2em;    
+}
+
+
+.buttonMode.active {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+}
+
+.buttonMode:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+

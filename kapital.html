@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>kapital</title>
+    <link rel="stylesheet" href="./style/style.css" />
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<style>
+    #scorePossible {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        /* 5 colonnes de taille égale */
+        gap: 8px;
+        padding: 10px;
+    }
+
+    #divCancel {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 8px;
+        padding: 10px;
+    }
+
+    #divCancel button {
+        min-height: 70px;
+        box-sizing: border-box;
+    }
+
+    .buttonScore {
+        width: 100%;
+        margin: unset;
+        /*aspect-ratio: 1 / 1;*/
+        /* Carré */
+        font-size: 1.2em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+        touch-action: manipulation;
+    }
+
+    .buttonScore:active {
+        /* background-color: #0056b3; */
+    }
+</style>
+
+<body>
+
+
+    <script src="./libs/jquery3.7.js"></script>
+
+    <h1> Kapital </h1>
+    <CENTER><button onclick="afficherRegles()"> Voir les règles </button></CENTER>
+
+    <div id="entete">
+        <h3>Nouvelle Partie:</h3>
+
+        <label>Nombre Joueurs :</label>
+        <input id="nbJrs" style="width:60px;" type="number" onchange="genererTableauNom()" />
+
+        <table id="tableJoueurs">
+            <tbody></tbody>
+        </table>
+
+
+
+        <button onclick="lancerPartie()"> LANCER PARTIE </button>
+    </div>
+
+    <div id="regle" class="hide">
+        <h3>Régle :</h3>
+        <span>
+            <p>L'Horloge Comptée est un jeu d'adresse qui vous fait viser toutes les zones de la cible.</p>
+
+            <p>Vous avez 21 lancers de 3 fléchettes chacun. Chaque lancer comporte trois fléchettes. Pour le premier
+                lancer, vous devez viser le chiffre 1, pour le second, le chiffre 2, et ainsi de suite.</p>
+
+            <p>Concernant le comptage des points :
+            <ul>
+                <li>La zone simple vaut 1 point,</li>
+                <li>La zone des doubles vaut 2 points,</li>
+                <li>La zone des triples vaut 3 points,</li>
+                <li>Et cela, quel que soit le tour où vous êtes.</li>
+            </ul>
+            </p>
+
+            <p>Un exemple pour mieux comprendre :
+                <br>Tour n°1, vous devez viser le numéro 1.
+                <br>Première fléchette : vous faites double 1 (2 points),
+                <br>Deuxième fléchette : 1 simple (1 point),
+                <br>Troisième fléchette : vous tombez dans le 20 (0 point).
+                <br>Vous marquez donc 2 + 1 + 0 = 3 points. Vous cliquerez alors sur le chiffre 3.
+            </p>
+
+            <p>Petite particularité concernant la bulle :
+            <ul>
+                <li>Une demi-bulle vaut 2 points,</li>
+                <li>Une double-bulle vaut 4 points.</li>
+            </ul>
+            </p>
+
+            <p>Bonne partie à vous !</p>
+        </span>
+
+        <button onclick="cacherRegles()"> Bien Compris, tu peux cacher les règles ! </button>
+    </div>
+
+    <div id="contenu" class="hide">
+        <table id="tableScore">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="divScore" style="flex-direction:column;">
+            <div id="scorePossible">
+
+            </div>
+            <div id="divCancel">
+                <button class='buttonScore' onclick='saisieScore(0)' style="grid-column: span 1;">0</button>
+
+
+                <button id="btMode_1" style="grid-column: span 2;" class="buttonMode active" data-action="1"
+                    onclick="setMode(1)">Simple</button>
+                <button id="btMode_2" style="grid-column: span 2;" class="buttonMode" data-action="2"
+                    onclick="setMode(2)">Double</button>
+                <button id="btMode_3" style="grid-column: span 2;" class="buttonMode" data-action="3"
+                    onclick="setMode(3)">Triple</button>
+
+
+                <button style="background-color:red;grid-column: span 1;" onclick="annulerScore()">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="divFin" class="hide">
+        <button onclick="window.location.href='index.html'"> Faire un autre Jeu </button>
+        <button onclick="location.reload()"> Rejouer à l'horloge comptée </button>
+    </div>
+
+
+    <script>
+        var scorePossible = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, "B"];
+        var objectif = [20, "Cote", 19, "Suite", 18, "Couleur", 17, "Double", 16, "Triple", 15, 57, 14, "B"];
+
+        var joueurs = [];
+        var resultats = [];
+        var flechettes = [];
+
+
+        var modeActuel = 1;
+
+        var indiceJoueurActuel = 0;
+        var objectifActuel = -1; //CORRECT
+        //var objectifActuel = 0;
+        var indiceFlechette = 1;
+
+        var scoreEncours = 0;
+
+        function genererTableauNom() {
+            let nbrJrs = $('#nbJrs').val();
+            $('#tableJoueurs').empty();
+
+            for (i = 1; i <= nbrJrs; i++) {
+                let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" style="width:150px;" id="in_pseudo_' + i + '"/></td></tr>';
+                $('#tableJoueurs').append(html);
+            }
+            $('#in_pseudo_1').focus();
+        }
+
+        function lancerPartie() {
+            //cache entete
+            $('#entete').hide();
+            //affichage contenu
+            $('#contenu').show();
+
+            //tirage au sort des joueurs
+            // Vide le tableau des joueurs
+            joueurs = [];
+
+            // Récupère tous les pseudos
+            $('.pseudo').each(function () {
+                let pseudo = $(this).val().trim();
+                if (pseudo !== "") {
+                    joueurs.push(pseudo);
+                }
+            });
+
+            // Mélange aléatoirement les joueurs (algorithme de Fisher-Yates)
+            for (let i = joueurs.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [joueurs[i], joueurs[j]] = [joueurs[j], joueurs[i]];
+            }
+
+
+            let enteteHtml = "<tr><td></td>";
+            let bodyHtmlDebut = "<tr><td></td>";
+            let totauxHtml = "<tr><td>Total</td>";
+            joueurs.forEach(function (joueur, index) {
+                enteteHtml += "<td>" + joueur + "</td>";
+            });
+            enteteHtml += "</tr>";
+
+            $('#tableScore thead').append(enteteHtml);
+
+            $('#score_0_1').append()
+            ajouteLigne();
+            setScorePossible();
+        }
+
+        function ajouteLigne() {
+            if (objectifActuel == 13) {
+                alert('FIN DE LA PARTIE !');
+                cacheDivSaisiePossible();
+                $('#divFin').show();
+            } else {
+                objectifActuel++;
+                let scoreStr = objectif[objectifActuel];
+
+                let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
+                joueurs.forEach(function (joueur, index) {
+                    htmlLigne += "<td id='score_" + objectifActuel + "_" + (index) + "'></td>";
+                });
+
+                htmlLigne += "</tr>";
+                $('#tableScore tbody').append(htmlLigne);
+                if (objectifActuel == 13) {
+                    $('#btMode_3').hide();
+                }
+            }
+        }
+
+        function setMode(value) {
+            modeActuel = value;
+
+            // Désélectionner tous les boutons d'action
+            $('.buttonMode').removeClass('active');
+            $('#btMode_' + value).addClass('active');
+
+        }
+
+        function setScorePossible() {
+            $('#scorePossible').show();
+            let html = "";
+            scorePossible.forEach(function (sc) {
+                let val = sc;
+                if (sc == "B") {
+                    val = 25;
+                }
+                html += "<button class='buttonScore' onclick='saisieScore(" + val + ")'>" + sc + "</button>";
+            });
+            $('#scorePossible').append(html);            
+        }
+
+
+        function isCouleurDifférente(flechette) {
+            let rouges = [[2, 20], [3, 20], [2, 18], [3, 18], [2, 13], [3, 13], [2, 10], [3, 10], [2, 2], [3, 2], [2, 3], [3, 3], [2, 7], [3, 7], [2, 8], [3, 8], [2, 14], [3, 14], [2, 12], [3, 12], [2, 25]];
+            let verts = [[2, 1], [3, 1], [2, 4], [3, 4], [2, 6], [3, 6], [2, 15], [3, 15], [2, 17], [3, 17], [2, 19], [3, 19], [2, 16], [3, 16], [2, 11], [3, 11], [2, 9], [3, 9], [2, 5], [3, 5], [1, 25]];
+            let noirs = [[1, 20], [1, 18], [1, 13], [1, 10], [1, 2], [1, 3], [1, 7], [1, 8], [1, 14], [1, 12]];
+            let blancs = [[1, 1], [1, 4], [1, 6], [1, 15], [1, 17], [1, 19], [1, 16], [1, 11], [1, 9], [1, 5]];
+
+            // Fonction pour vérifier la couleur d'une flechette
+            function getCouleur(flechette) {
+                if (rouges.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'rouge';
+                if (verts.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'vert';
+                if (noirs.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'noir';
+                if (blancs.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'blanc';
+                return null; // Si la flechette n'appartient à aucune couleur valide
+            }
+
+            // Vérifie les couleurs des trois flechettes
+            const couleurFlechette1 = getCouleur(flechette[1]);
+            const couleurFlechette2 = getCouleur(flechette[2]);
+            const couleurFlechette3 = getCouleur(flechette[3]);
+
+            // Vérifie que les trois couleurs sont différentes
+            const couleurs = [couleurFlechette1, couleurFlechette2, couleurFlechette3];
+            const uniqueCouleurs = new Set(couleurs);
+
+            // Si le nombre de couleurs uniques est 3, cela signifie que chaque flechette a une couleur différente
+            return uniqueCouleurs.size === 3;
+        }
+
+        function isCoteACote(flechette) {
+            const cibleZone = [19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3];
+
+            const f1 = flechette[1][1];
+            const f2 = flechette[2][1];
+            const f3 = flechette[3][1];
+
+            const unique = new Set([f1, f2, f3]);
+            if (unique.size !== 3) {
+                return false;
+            }
+
+            // Recherche les fléchettes dans des séquences consécutives
+            for (let j = 0; j < cibleZone.length; j++) {
+
+                const sequence = [
+                    cibleZone[j],
+                    cibleZone[(j + 1) % cibleZone.length],
+                    cibleZone[(j + 2) % cibleZone.length]
+                ];                
+
+                // Si les trois valeurs (peu importe l'ordre) sont dans la séquence
+                if (sequence.includes(f1) && sequence.includes(f2) && sequence.includes(f3)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function isSuite(flechettes) {
+            let tabTemp = [];
+            flechettes.forEach(flechette => {
+                tabTemp.push(flechette[1]);
+            });
+
+            let tabFlechettesTrier = tabTemp.sort((a, b) => a - b);
+
+            // Vérifie que c'est une suite (au moins 2 éléments)
+            for (let i = 1; i < tabFlechettesTrier.length; i++) {
+                if (tabFlechettesTrier[i] !== tabFlechettesTrier[i - 1] + 1) {
+                    return false;
+                }
+            }
+            return tabFlechettesTrier.length > 1;
+        }
+
+        function saisieScore(valeur) {
+            if (resultats[indiceJoueurActuel] == undefined) {
+                resultats[indiceJoueurActuel] = [];
+            }
+            if (resultats[indiceJoueurActuel][objectifActuel] == undefined) {
+                resultats[indiceJoueurActuel][objectifActuel] = 0;
+            }
+
+            if (flechettes[indiceJoueurActuel] == undefined) {
+                flechettes[indiceJoueurActuel] = [];
+            }
+            if (flechettes[indiceJoueurActuel][objectifActuel] == undefined) {
+                flechettes[indiceJoueurActuel][objectifActuel] = [];
+            }
+            if (flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] == undefined) {
+                flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [1, 0];
+            }
+            flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+
+            if (indiceFlechette == 1) {
+                scoreEncours = 0;
+            }
+
+            switch (objectifActuel) {
+                case 0:
+                    if (valeur == 20) {
+                        scoreEncours += (modeActuel) * 20;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, 20];
+                    }
+                    break;
+
+                case 1:
+                    if (indiceFlechette == 3) {
+                        if (isCoteACote(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+
+                case 2:
+                    if (valeur == 19) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 3:
+                    if (indiceFlechette == 3) {
+                        if (isSuite(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+
+                case 4:
+                    if (valeur == 18) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 5:
+                    if (indiceFlechette == 3) {
+                        if (isCouleurDifférente(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+
+                case 6:
+                    if (valeur == 17) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 7: {
+                    if (modeActuel == 2) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+                }
+                case 8:
+                    if (valeur == 16) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 9:
+                    if (modeActuel == 3) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 10:
+                    if (valeur == 15) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 11:
+                    scoreEncours += (modeActuel) * valeur;
+                    flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    if (indiceFlechette == 3 && scoreEncours != 57) {
+                        scoreEncours = 0;
+                    }
+
+                case 12:
+                    if (valeur == 14) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 13:
+                    if (valeur == 25) {
+                        //attention test simple ou double pas de triple
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+            }            
+
+            if (indiceFlechette == 3) {
+                if (scoreEncours == 0) {
+                    if (objectifActuel == 0) {
+                        resultats[indiceJoueurActuel][objectifActuel] = 0;
+                    } else {
+                        resultats[indiceJoueurActuel][objectifActuel] = Math.ceil(resultats[indiceJoueurActuel][objectifActuel - 1] / 2);
+                    }
+                } else {
+                    if (objectifActuel == 0) {
+                        resultats[indiceJoueurActuel][objectifActuel] = scoreEncours;
+                    } else {
+                        resultats[indiceJoueurActuel][objectifActuel] = resultats[indiceJoueurActuel][objectifActuel - 1] + scoreEncours;
+                    }
+                }
+                setCaseSuivante();
+            } else {
+                indiceFlechette++;
+            }
+
+            setMode(1); //retour au simple automatique
+        }
+
+        function setCaseSuivante() {
+            indiceFlechette = 1;
+            //enleve la case actuelle
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
+            let color = "#2ecc71";
+            if (resultats[indiceJoueurActuel][objectifActuel] < resultats[indiceJoueurActuel][objectifActuel - 1]) {
+                color = "red";
+            }
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append("<label style='color:" + color + "'  class='resultat'>" + resultats[indiceJoueurActuel][objectifActuel] + "</label>");
+
+            if (indiceJoueurActuel == (joueurs.length - 1)) {
+                ajouteLigne();
+                indiceJoueurActuel = 0;
+            } else {
+                indiceJoueurActuel++;
+            }
+
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append('<label class="saisie"></label>');
+        }
+
+        function annulerScore(){
+            
+        }
+
+        function afficherRegles() {
+            $('#regle').show();
+        }
+
+        function cacherRegles() {
+            $('#regle').hide();
+        }
+    </script>
+
+
+</body>
+
+</html>
