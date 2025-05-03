@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style/style.css" />
-    <title>Moprion</title>
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <title>Morpion</title>
     <style>
         body {
             font-family: sans-serif;
@@ -147,7 +149,7 @@
 
 <body>
 
-    <h1>Jeu du Morpion - Points Visuels</h1>
+    <h1>Morpion</h1>
 
     <div id="startScreen">
         <h2>Configuration des équipes</h2>
@@ -164,11 +166,11 @@
         </div>
 
         <div style="display:flex;justify-content:center;">
-            <div id="teamXInputs">
+            <div id="teamXInputs" style="display: flex;  flex-direction: column;">
                 <h3></h3>
             </div>
 
-            <div id="teamOInputs">
+            <div id="teamOInputs" style="display: flex;  flex-direction: column;">
                 <h3></h3>
             </div>
         </div>
@@ -192,8 +194,8 @@
 
             <div class="case-btns" id="caseButtons"></div>
             <div style="margin-top: 20px;">
-                <button class="action-btn" onclick="passerSansPoint()">0</button>
-                <button class="action-btn" onclick="annulerDernierLancer()">Annuler le dernier lancer</button>
+                <button class="action-btn" style="background-color:red;height: 70px; width: 70px;" onclick="passerSansPoint()">0</button>
+                <button class="action-btn" style="background-color:red;height: 70px; width: 70px;" onclick="annulerDernierLancer()"><i class="fa-solid fa-rotate-left"></i></button>
             </div>
         </div>
     </div>
