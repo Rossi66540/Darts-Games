@@ -359,11 +359,11 @@
         function applyToCell(index) {
             // Sauvegarde avant modification pour permettre l'annulation
             historyStack.push({
-                index,
-                team: currentTeam,
-                action: currentAction,
-                player: currentPlayer,
-                throws: currentPlayerThrows
+                cellScores: JSON.parse(JSON.stringify(cellScores)), // copie profonde
+                currentTeam,
+                currentPlayer,
+                currentPlayerThrows,
+                playerIndices: { ...playerIndices }
             });
 
             cellScores[index][currentTeam] += currentAction;
@@ -421,23 +421,22 @@
                 alert("Aucun lancer à annuler.");
                 return;
             }
-
+        
             const last = historyStack.pop();
-
-            // Revenir à l'état précédent
-            currentTeam = last.team;
-            currentPlayer = last.player;
-            currentPlayerThrows = last.throws;
-
-            if (last.index !== null) {
-                // Retirer les points
-                cellScores[last.index][currentTeam] -= last.action;
-                updateCellDisplay(last.index);
+        
+            cellScores = JSON.parse(JSON.stringify(last.cellScores));
+            currentTeam = last.currentTeam;
+            currentPlayer = last.currentPlayer;
+            currentPlayerThrows = last.currentPlayerThrows;
+            playerIndices = { ...last.playerIndices };
+        
+            // Recalculer l'affichage de toutes les cellules
+            for (let i = 0; i < 9; i++) {
+                updateCellDisplay(i);
             }
-
+        
             showCurrentTeam();
         }
-
         function updateCellDisplay(index) {
             const scoreDiv = document.getElementById('scoreDiv' + index);
             const scores = cellScores[index];
@@ -457,12 +456,12 @@
             const scores = cellScores[index];
             if (scores.X >= 3) {
                 const cell = document.getElementById('cell' + index);
-                cell.innerHTML = '<div class="cell-content">✖</div>';
+                cell.innerHTML = '<div class="cell-content teamX">✖</div>';
                 cell.dataset.winner = 'X';
                 checkVictory('X');
             } else if (scores.O >= 3) {
                 const cell = document.getElementById('cell' + index);
-                cell.innerHTML = '<div class="cell-content">O</div>';
+                cell.innerHTML = '<div class="cell-content teamO">O</div>';
                 cell.dataset.winner = 'O';
                 checkVictory('O');
             }
