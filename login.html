@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion</title>
+</head>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom right, #6fb1fc, #4364f7);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    form {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 90%;
+    }
+
+    h1 {
+        text-align: center;
+        color: black;
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.7rem;
+        margin-top: 0.3rem;
+        border: 1px solid #ccc;
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        padding: 0.8rem;
+        background-color: #4364f7;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    button:hover {
+        background-color: #2e4ee1;
+    }
+
+    p {
+        text-align: center;
+        margin-top: 1rem;
+        color: white;
+    }
+
+    a {
+        color: #ffd700;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+        form {
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        button {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+<body>
+    <form id="loginForm">
+      <h1>Connexion</h1>
+    <label>Email : <input type="email" id="email" required></label><br>
+    <label>Mot de passe : <input type="password" id="mot_de_passe" required></label><br>
+    <button type="submit">Se connecter</button>
+  </form>
+
+  <script>
+    function setCookie(name, value, days) {
+      const d = new Date();
+      d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = name + "=" + value + ";expires=" + d.toUTCString() + ";path=/";
+    }
+  
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+  
+      const email = document.getElementById("email").value;
+      const mot_de_passe = document.getElementById("mot_de_passe").value;
+  
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("mot_de_passe", mot_de_passe);
+  
+      const response = await fetch("login.php", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await response.json();
+      console.log(result);
+  
+      if (result.success) {
+        setCookie("session", result.pseudo, 1);  // Créer un cookie de session avec le pseudo        
+        window.location.href = "dashboard.html";  // Redirection vers le tableau de bord
+      } else {
+        alert("Identifiants incorrects !");
+      }
+    });
+  </script>
+</body>
+</html>

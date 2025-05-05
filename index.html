@@ -3,40 +3,88 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Horloge Comptée</title>
-    <link rel="stylesheet" href="./style/style.css" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
+    <title>Accueil</title>
 </head>
 
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #6fb1fc, #4364f7);
+      margin: 0;
+      padding: 0;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+      flex-direction: column;
+      padding: 2rem;
+    }
+  
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+  
+    p {
+      margin: 1rem 0;
+    }
+  
+    a {
+      display: inline-block;
+      background-color: white;
+      color: #4364f7;
+      padding: 0.7rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s, color 0.3s;
+    }
+  
+    a:hover {
+      background-color: #2e4ee1;
+      color: white;
+    }
+  
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+  
+      h1 {
+        font-size: 1.5rem;
+      }
+  
+      a {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+  
+
 <body>
-    <script src="./libs/jquery3.7.js"></script>
+    <h1>Bienvenue sur Darts-Games</h1>
 
-<h1> DARTS-GAMES  </h1>
+    Pour profiter de nos jeux et partager vos meilleurs scores avec vos amis, un compte est nécessaire.
 
-<h5> Bienvenue sur Darts Games </h5>
-<label> Je vous propose différents jeux de fléchettes afin que nous n'ayez plus besoin de tenir les comptes des scores. </label>
-<label> Voici les jeux disponibles : </label>
+    <p><a href="signup.html">Créer un compte</a></p>
+    <p><a href="login.html">Se connecter</a></p>
 
-<ul>
-    <li>
-        <button onclick="window.location.href='horloge_compte.html';">  
-            Horloge Comptée
-        </button>
-    </li>
-    <li>
-        <button onclick="window.location.href='morpion.html';">  
-            Morpion
-        </button>
-    </li>
-    <li>
-        <button onclick="window.location.href='kapital.html';">  
-            Kapital 
-        </button>
-    </li>
-</ul>
+    <script>
+        // Vérifie la présence du cookie de session
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
 
+        const session = getCookie("session");
+        if (session) {
+            window.location.href = "dashboard.html"; // ou page protégée
+        }
+    </script>
 </body>
 
 </html>
