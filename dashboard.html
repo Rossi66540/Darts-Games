@@ -7,172 +7,21 @@
     <link rel="stylesheet" href="./style/style.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Icône de l'application -->
+    <link rel="apple-touch-icon" href="favicon.ico">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- Couleur de fond de la barre de statut -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Darts-Games">
+
 </head>
 
-<style>
-    html,
-    body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        /* Empêche le défilement */
-    }
 
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(to bottom right, #6fb1fc, #4364f7);
-        color: white;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1.5rem;
-        font-weight: 600;
-        color: white;
-    }
-
-    h5 {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-
-    label {
-        font-weight: bold;
-        margin-bottom: 1rem;
-        color: white;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-        margin-top: 2rem;
-    }
-
-    ul li {
-        margin: 1rem 0;
-    }
-
-    button {
-        padding: 1rem 2rem;
-        background-color: #2ecc71;
-        /* Vert doux */
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        width: 80%;
-        max-width: 300px;
-        margin-bottom: 1rem;
-    }
-
-    button:hover {
-        background-color: #27ae60;
-        /* Vert plus foncé */
-    }
-
-    button.logout {
-        background-color: #e74c3c;
-        /* Rouge */
-        width: 80%;
-        max-width: 300px;
-    }
-
-    button.logout:hover {
-        background-color: #c0392b;
-        /* Rouge plus foncé */
-    }
-
-    button:focus {
-        outline: none;
-    }
-
-    @media (max-width: 768px) { /* Pour les tablettes et petites écrans */
-        body {
-            padding: 2rem;
-        }
-    
-        h1 {
-            font-size: 3rem; /* Augmenter la taille du titre */
-            margin-bottom: 2rem;
-        }
-    
-        h5 {
-            font-size: 1.5rem; /* Agrandir la taille du sous-titre */
-            margin-bottom: 1.5rem;
-        }
-    
-        button {
-            font-size: 2rem; /* Augmenter la taille du texte dans les boutons */
-            padding: 1.2rem 2.5rem; /* Agrandir l'espace dans les boutons */
-            width: 90%;
-            max-width: 350px; /* Augmenter la largeur des boutons */
-        }
-    
-        button.logout {
-            font-size: 2rem; /* Agrandir la taille du texte du bouton de déconnexion */
-            padding: 1.2rem 2.5rem;
-            width: 90%;
-            max-width: 350px;
-        }
-    
-        ul li {
-            font-size: 1.5rem; /* Agrandir le texte des éléments de la liste */
-            margin: 1.5rem 0;
-        }
-    
-        label {
-            font-size: 1.5rem; /* Agrandir la taille du texte des labels */
-            margin-bottom: 2rem;
-        }
-    }
-    
-    @media (max-width: 480px) { /* Pour les smartphones */
-        body {
-            padding: 1.5rem;
-        }
-    
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-    
-        h5 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-        }
-    
-        button {
-            font-size: 1.8rem; /* Agrandir la taille du texte dans les boutons */
-            padding: 1.2rem 2rem; /* Agrandir l'espace dans les boutons */
-            width: 90%;
-            max-width: 300px;
-        }
-    
-        button.logout {
-            font-size: 1.8rem;
-            padding: 1.2rem 2rem;
-            width: 90%;
-            max-width: 300px;
-        }
-    
-        ul li {
-            font-size: 1.2rem; /* Agrandir le texte des éléments de la liste */
-            margin: 1.2rem 0;
-        }
-    
-        label {
-            font-size: 1.3rem; /* Agrandir la taille du texte des labels */
-            margin-bottom: 2rem;
-        }
-    }
-</style>
 
 <body>
     <script src="./libs/jquery3.7.js"></script>
@@ -224,9 +73,21 @@
         </ul>
     </div>
     <!-- Bouton de déconnexion -->
-    <!--<button onclick="logout()" style="margin-top: 20px;">Déconnexion</button> -->
+    <button onclick="logout()" style="margin-top: 20px;">Déconnexion</button>
+    <button onclick="viderCache()" style="margin-top: 20px;">Vider Cache</button>
+
+    <script src="js/sessionCheck.js"></script>
 
     <script>
+
+        function viderCache() {
+            caches.keys().then(names => {
+                return Promise.all(names.map(name => caches.delete(name)));
+              }).then(() => {
+                location.reload(true);
+              });
+        }
+
         document.getElementById("pseudo").innerText = getCookie("session");
 
         function logout() {

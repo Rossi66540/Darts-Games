@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #6fb1fc, #4364f7);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Formulaire de connexion */
+form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+}
+
+h1 {
+    text-align: center;
+    color: black;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #4364f7;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1.5rem;
+}
+
+button:hover {
+    background-color: #2e4ee1;
+}
+
+/* Style du message de redirection */
+p {
+    text-align: center;
+    margin-top: 1rem;
+    color: white;
+}
+
+a {
+    color: #ffd700;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Ajustements pour les petits écrans */
+@media (max-width: 480px) {
+    form {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    button {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+}
+
+/* Amélioration de la disposition générale */
+@media (max-width: 768px) {
+    form {
+        width: 90%;
+    }
+}

@@ -1,30 +1,30 @@
-/* ========== Comportement tactile mobile ========== */
 html,
 body {
-    margin: 0;
-    padding: 20px;
     touch-action: manipulation;
+    /* bloque le double tap zoom */
     -webkit-tap-highlight-color: transparent;
+    /* enlève le flash bleu au tap sur iOS */
+}
+
+body {
     font-family: Arial, sans-serif;
     background: linear-gradient(to bottom right, #6fb1fc, #4364f7);
-    min-height: 100vh;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
     color: #333;
-    overflow-x: hidden;
 }
 
-/* ========== Titres ========== */
 h1 {
     text-align: center;
-    color: white;
+    color: black;
     margin-bottom: 1rem;
-    font-size: 2rem;
 }
 
-/* ========== Conteneurs principaux ========== */
 form,
 #regle,
 #contenu,
@@ -36,87 +36,28 @@ form,
     max-width: 800px;
     width: 90%;
     margin: 20px auto;
-    box-sizing: border-box;
 }
 
-/* ========== Champs de saisie ========== */
+label {
+    /* display: block; */
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
-.pseudo,
-select {
+.pseudo {
     width: 100%;
     padding: 0.7rem;
     margin-top: 0.3rem;
     border: 1px solid #ccc;
     border-radius: 0.5rem;
     box-sizing: border-box;
-    font-size: 1rem;
 }
 
-select {
-    background-color: white;
-    height: 40px;
-    width: 100%;
-}
-
-/* ========== Labels ========== */
-label {
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: white;
-    display: block;
-}
-
-ul {
-    list-style: none;
-    padding-left: 0;
-    margin-left: 0;
-}
-
-/* ========== Style des boutons ========== */
-button,
-.buttonScore,
-.buttonMode {
-    width: 100%;
-    padding: 1rem;
-    background-color: #f1c40f;
-    color: black;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-    margin-top: 1rem;
-}
-
-button:hover,
-.buttonScore:hover,
-.buttonMode:hover {
-    background-color: #d4ac0d;
-}
-
-.buttonScore,
-.buttonMode {
-    width: auto;
-    font-size: 1.2rem;
-    padding: 0.8rem 1.5rem;
-    margin: 0.5rem;
-}
-
-.buttonMode.active {
-    background-color: #4CAF50;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
-}
-
-.buttonMode:active {
-    transform: translateY(2px);
-    box-shadow: none;
-}
-
-/* ========== Saisie score ========== */
 .saisie {
     display: inline-block;
     width: 40px;
@@ -132,7 +73,46 @@ button:hover,
     font-size: 16px;
 }
 
-/* ========== Textes généraux ========== */
+button,
+.buttonScore,
+.buttonMode {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #f1c40f;
+    color: black;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    margin-top: 1rem;
+}
+
+button:hover,
+.buttonScore:hover,
+.buttonMode:hover {
+    background-color: #d4ac0d;
+}
+
+.buttonScore,
+.buttonMode {
+    width: auto;
+    font-size: 1.5em;
+    padding: 1em 2em;
+    margin: 5px;
+}
+
+.buttonMode.active {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+}
+
+.buttonMode:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
 p {
     text-align: center;
     margin-top: 1rem;
@@ -148,7 +128,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* ========== Tableaux ========== */
 #entete table,
 #tableScore {
     width: 100%;
@@ -170,12 +149,11 @@ a:hover {
     width: 80px;
 }
 
-/* ========== Étiquettes et objectifs ========== */
 label.resultat,
 label.total {
     font-weight: bold;
     color: #2ecc71;
-    font-size: 1.5rem;
+    font-size: 25px;
 }
 
 label.saisie {
@@ -186,10 +164,9 @@ label.saisie {
 .objectif {
     background-color: #f9f9f9;
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 25px;
 }
 
-/* ========== Divers ========== */
 .hide {
     display: none;
 }
@@ -202,12 +179,20 @@ label.saisie {
 #divScore {
     margin-top: 30px;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: row;
 }
 
 #divCancel {
     flex: 1;
+}
+
+select {
+    background-color: white;
+    border-radius: 8px;
+    height: 35px;
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
 }
 
 .flexColumn {
@@ -215,37 +200,24 @@ label.saisie {
     flex-direction: column;
 }
 
-/* ========== Responsive mobile ========== */
 @media (max-width: 480px) {
+
     form,
     #entete,
     #regle,
     #contenu,
     #divFin {
-        padding: 1.2rem;
+        padding: 1.5rem;
     }
 
     h1 {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
 
     button,
     .buttonScore,
     .buttonMode {
-        font-size: 1rem;
-        padding: 0.8rem 1rem;
-    }
-
-    .buttonScore,
-    .buttonMode {
-        width: 100%;
-        display: block;
-        margin: 0.5rem 0;
-    }
-
-    .objectif,
-    label.resultat,
-    label.total {
-        font-size: 1.2rem;
+        font-size: 0.95rem;
+        padding: 0.8rem 1.2rem;
     }
 }
