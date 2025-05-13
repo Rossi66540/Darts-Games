@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mot de passe oublié</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/login.css" />
+</head>
+<body>
+  <form id="resetForm">
+    <h1>Réinitialiser le mot de passe</h1>
+    <p>Veuillez saisir votre adresse email pour recevoir un lien de réinitialisation.</p>
+    
+    <label>Email : <input type="email" id="email" required></label><br>
+    <button type="submit">Envoyer</button>
+
+    <p><a href="login.html">← Retour à la connexion</a></p>
+  </form>
+
+  <script>
+    document.getElementById("resetForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById("email").value;
+      const formData = new FormData();
+      formData.append("email", email);
+
+      const response = await fetch("resetPass.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert("Un email de réinitialisation a été envoyé.");
+        window.location.href = "login.html";
+      } else {
+        alert("Erreur : " + result.message);
+      }
+    });
+  </script>
+</body>
+</html>
