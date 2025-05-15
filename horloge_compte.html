@@ -17,15 +17,54 @@
 <body>
     <script src="./libs/jquery3.7.js"></script>
 
+    <div id="modalRegles" class="modal hide">
+        <div class="modal-content">
+            <span class="close" onclick="cacherRegles()">&times;</span>
+            <h3>Règle :</h3>
+            <p>L'Horloge Comptée est un jeu d'adresse qui vous fait viser toutes les zones de la cible.</p>
+
+            <p>Vous avez 21 lancers de 3 fléchettes chacun. Chaque lancer comporte trois fléchettes. Pour le premier
+                lancer, vous devez viser le chiffre 1, pour le second, le chiffre 2, et ainsi de suite.</p>
+
+            <p>Concernant le comptage des points :</p>
+            <ul>
+                <li>La zone simple vaut 1 point,</li>
+                <li>La zone des doubles vaut 2 points,</li>
+                <li>La zone des triples vaut 3 points,</li>
+                <li>Et cela, quel que soit le tour où vous êtes.</li>
+            </ul>
+
+            <p>Un exemple pour mieux comprendre :</p>
+            <p>
+                Tour n°1, vous devez viser le numéro 1. <br>
+                Première fléchette : vous faites double 1 (2 points), <br>
+                Deuxième fléchette : 1 simple (1 point), <br>
+                Troisième fléchette : vous tombez dans le 20 (0 point). <br>
+                Vous marquez donc 2 + 1 + 0 = 3 points. Vous cliquerez alors sur le chiffre 3.
+            </p>
+
+            <p>Petite particularité concernant la bulle :</p>
+            <ul>
+                <li>Une demi-bulle vaut 2 points,</li>
+                <li>Une double-bulle vaut 4 points.</li>
+            </ul>
+
+            <p>Bonne partie à vous !</p>
+
+            <CENTER><button onclick="cacherRegles()" class="buttonGeneral" >Bien Compris, allons jouer !</button></CENTER>
+        </div>
+    </div>
+
+
     <h1> Horloge Comptée </h1>
-    <CENTER><button onclick="afficherRegles()"> Voir les règles </button></CENTER>
+    <CENTER><button onclick="afficherRegles()" class="buttonGeneral"> Voir les règles </button></CENTER>
 
     <div id="entete">
         <h3>Nouvelle Partie:</h3>
-        <br/>
+        <br />
 
         <label>Nombre Joueurs :</label>
-        <input id="nbJrs" style="width:60px;" type="number" onchange="genererTableauNom()" />
+        <input id="nbJrs" style="width:60px;" type="number" onkeyup="genererTableauNom()" />
 
         <table id="tableJoueurs">
             <tbody></tbody>
@@ -33,45 +72,9 @@
 
 
 
-        <button onclick="lancerPartie()"> LANCER PARTIE </button>
+        <CENTER><button onclick="lancerPartie()" class="buttonGeneral"> LANCER PARTIE </button></CENTER>
     </div>
 
-    <div id="regle" class="hide">
-        <h3>Régle :</h3>
-        <span>
-            <p>L'Horloge Comptée est un jeu d'adresse qui vous fait viser toutes les zones de la cible.</p>
-    
-            <p>Vous avez 21 lancers de 3 fléchettes chacun. Chaque lancer comporte trois fléchettes. Pour le premier lancer, vous devez viser le chiffre 1, pour le second, le chiffre 2, et ainsi de suite.</p>
-    
-            <p>Concernant le comptage des points :
-                <ul>
-                    <li>La zone simple vaut 1 point,</li>
-                    <li>La zone des doubles vaut 2 points,</li>
-                    <li>La zone des triples vaut 3 points,</li>
-                    <li>Et cela, quel que soit le tour où vous êtes.</li>
-                </ul>
-            </p>
-    
-            <p>Un exemple pour mieux comprendre :
-                <br>Tour n°1, vous devez viser le numéro 1. 
-                <br>Première fléchette : vous faites double 1 (2 points), 
-                <br>Deuxième fléchette : 1 simple (1 point),
-                <br>Troisième fléchette : vous tombez dans le 20 (0 point).
-                <br>Vous marquez donc 2 + 1 + 0 = 3 points. Vous cliquerez alors sur le chiffre 3.
-            </p>
-    
-            <p>Petite particularité concernant la bulle :
-                <ul>
-                    <li>Une demi-bulle vaut 2 points,</li>
-                    <li>Une double-bulle vaut 4 points.</li>
-                </ul>
-            </p>
-    
-            <p>Bonne partie à vous !</p>
-        </span>
-
-        <button onclick="cacherRegles()"> Bien Compris, tu peux cacher les règles ! </button>
-    </div>
 
     <div id="contenu" class="hide">
         <table id="tableScore">
@@ -80,14 +83,11 @@
             <tfoot></tfoot>
         </table>
 
-        <div id="divScore" >
+        <div id="divScore">
             <div id="scorePossible">
 
             </div>
-            <div id="divCancel">
-                <button style="background-color:red;height: 70px; width: 70px;" onclick="annulerScore()">
-                    <i class="fa-solid fa-rotate-left"></i>
-                </button>
+            <div id="divCancel" class="hide">                
             </div>
         </div>
     </div>
@@ -186,23 +186,30 @@
                 $('#tableScore tbody').append(htmlLigne);
             }
         }
-        
-        function afficherRegles(){
-            $('#regle').show();
+
+        function afficherRegles() {
+            $('#modalRegles').show();
         }
 
-        function cacherRegles(){
-            $('#regle').hide();
+        function cacherRegles() {
+            $('#modalRegles').hide();
         }
+
+        // Fermer la modal si clic à l'extérieur
+        $(window).on('click', function (event) {
+            if (event.target.id === 'modalRegles') {
+                cacherRegles();
+            }
+        });
 
         function setCaseSuivante() {
             //enleve la case actuelle
             $('#score_' + scoreActuel + "_" + indiceJoueurActuel).empty();
             let color = "#2ecc71";
-            if(resultats[indiceJoueurActuel][scoreActuel] == 0){
-                color ="red";
+            if (resultats[indiceJoueurActuel][scoreActuel] == 0) {
+                color = "red";
             }
-            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append("<label style='color:"+color+"'  class='resultat'>" + resultats[indiceJoueurActuel][scoreActuel] + "</label>");
+            $('#score_' + scoreActuel + "_" + indiceJoueurActuel).append("<label style='color:" + color + "'  class='resultat'>" + resultats[indiceJoueurActuel][scoreActuel] + "</label>");
 
             if (indiceJoueurActuel == (joueurs.length - 1)) {
                 ajouteLigne();
@@ -216,7 +223,7 @@
             afficheDivSaisiePossible();
         }
 
-        
+
         function afficheDivSaisiePossible() {
             $('#scorePossible').empty();
             let tabScore = saisieNormale;
@@ -229,9 +236,13 @@
                 html += "<button class='buttonScore' onclick='saisieScore(" + sc + ")'>" + sc + "</button>";
             });
             $('#scorePossible').append(html);
+            let cancel = `<button class='buttonScore' style="background-color:red;  " onclick="annulerScore()">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>`;
+            $('#scorePossible').append(cancel);
         }
 
-        function cacheDivSaisiePossible(){
+        function cacheDivSaisiePossible() {
             $('#divScore').hide();
         }
 

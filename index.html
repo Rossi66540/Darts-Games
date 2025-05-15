@@ -2,104 +2,63 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-    <link rel="stylesheet" href="./style/style.css" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
+  <meta charset="UTF-8">
+  <title>Accueil</title>
+  <link rel="stylesheet" href="./style/style.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="manifest" href="asset/manifest.json">
 
-    <!-- Icône de l'application -->
-    <link rel="apple-touch-icon" href="favicon.ico">
+  <!-- Icône de l'application -->
+  <link rel="apple-touch-icon" href="favicon.ico">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- Couleur de fond de la barre de statut -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Darts-Games">
+  <!-- Couleur de fond de la barre de statut -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Darts-Games">
 
 </head>
 
-<style>
-    {# body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #6fb1fc, #4364f7);
-      margin: 0;
-      padding: 0;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      min-height: 100vh;
-      flex-direction: column;
-      padding: 2rem;
-    }
-  
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-    }
-  
-    p {
-      margin: 1rem 0;
-    }
-  
-    a {
-      display: inline-block;
-      background-color: white;
-      color: #4364f7;
-      padding: 0.7rem 1.5rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background-color 0.3s, color 0.3s;
-    }
-  
-    a:hover {
-      background-color: #2e4ee1;
-      color: white;
-    }
-  
-    @media (max-width: 480px) {
-      body {
-        padding: 1rem;
-      }
-  
-      h1 {
-        font-size: 1.5rem;
-      }
-  
-      a {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.95rem;
-      }
-    } #}
-  </style>
-  
 
 <body>
+  <div id="divTitre">
     <h1>Bienvenue sur Darts-Games</h1>
+  </div>
+
+  <div id="corps">
 
     <label>Pour profiter de nos jeux et partager vos meilleurs scores avec vos amis, un compte est nécessaire.</label>
+    
+    <p><button class="buttonGeneral" onclick="window.location.href='signup.html'">Créer un compte</button></p>
+    <p><button class="buttonGeneral" onclick="window.location.href='login.html'">Se connecter</button></p>
+  </div>
+    
+  <script>
+    
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => {
+          console.log('✅ Service Worker enregistré avec succès :', reg.scope);
+        })
+        .catch(err => {
+          console.error('❌ Erreur lors de l’enregistrement du Service Worker :', err);
+        });
+    }
 
-    <p><button onclick="window.location.href='signup.html'">Créer un compte</button></p>
-<p><button onclick="window.location.href='login.html'">Se connecter</button></p>
+    // Vérifie la présence du cookie de session
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 
-    <script>
-        // Vérifie la présence du cookie de session
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
-        const session = getCookie("session");
-        if (session) {
-            window.location.href = "dashboard.html"; // ou page protégée
-        }
-    </script>
+    const session = getCookie("session");
+    if (session) {
+      window.location.href = "dashboard.html"; // ou page protégée
+    }
+  </script>
 </body>
 
 </html>

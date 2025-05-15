@@ -44,7 +44,7 @@
         }
     </script>
 
-    <div id="entete">
+    <div id="divTitre">
         <h1>Bienvenue <span id="pseudo"></span> sur Darts Games</h1>
     </div>
 
@@ -56,25 +56,25 @@
 
         <ul id="games-list">
             <li>
-                <button onclick="window.location.href='horloge_compte.html';">
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="window.location.href='horloge_compte.html';">
                     Horloge Comptée
                 </button>
             </li>
             <li>
-                <button onclick="window.location.href='morpion.html';">
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="window.location.href='morpion.html';">
                     Morpion
                 </button>
             </li>
             <li>
-                <button onclick="window.location.href='kapital.html';">
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="window.location.href='kapital.html';">
                     Kapital
                 </button>
             </li>
         </ul>
     </div>
     <!-- Bouton de déconnexion -->
-    <button onclick="logout()" style="margin-top: 20px;">Déconnexion</button>
-    <button onclick="viderCache()" style="margin-top: 20px;">Vider Cache</button>
+    <button class="buttonGeneral" onclick="logout()" style="margin-top: 20px;">Déconnexion</button>
+    <button class="buttonGeneral" onclick="viderCache()" style="margin-top: 20px;">Vider Cache</button>
 
     <script src="js/sessionCheck.js"></script>
 
