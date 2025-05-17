@@ -2,6 +2,7 @@
 // signup.php
 include 'config.php';
 
+
 // Si la requête est en POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer les données via POST
@@ -32,7 +33,7 @@ try {
 
     // Lier les paramètres avec les bons types
     $isActif = true;  // ou 1 si booléen
-    $stmt->bind_param("sssssi", $nom, $prenom, $pseudo, $email, $hashedPassword, $isActif);
+    $stmt->bind_param("sissss", $nom, $prenom, $pseudo, $email, $hashedPassword, $isActif);
 
     // Exécuter la requête
     $success = $stmt->execute();

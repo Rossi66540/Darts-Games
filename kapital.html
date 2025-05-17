@@ -51,8 +51,49 @@
 
 <body>
 
-
     <script src="./libs/jquery3.7.js"></script>
+
+    <div id="modalRegles" class="modal hide">
+        <div class="modal-content">
+            <span class="close" onclick="cacherRegles()">&times;</span>
+            <h3>Règle :</h3>
+<p>Le principe du jeu est le suivant : à un ou plusieurs joueurs, il y a 15 objectifs à chaque partie, qui se joue en une seule volée :</p>
+
+<p>Les 15 objectifs sont : le 20, le côte à côte, le 19, la suite, le 18, la couleur, le 17, le double, le 16, le triple, le 15, le 57, le 14 et le centre.</p>
+
+
+<p>Le gagnant est celui qui, à la fin de la partie, a le score le plus élevé.</p>
+
+<p>Les objectifs numérotés de 20 à 15 représentent les segments de la cible. L’objectif est que, sur 3 flèches lancées, au moins une atteigne le segment indiqué (simple, double ou triple).</p>
+
+<p>Si c’est réussi, on ajoute la somme des points faits dans ce segment au score de départ.</p>
+
+<p><strong>Attention :</strong> Si aucune flèche n’est dans le segment demandé, le score est divisé par 2. Si le résultat est décimal, on arrondit au nombre supérieur (ex : 45 / 2 = 22.5 → 23).</p>
+
+<h4>Objectifs particuliers :</h4>
+
+<p><strong>Côte à Côte :</strong> Les 3 flèches doivent toucher des segments voisins. Si c’est réussi, on additionne les points. Sinon, le score est divisé par 2.</p>
+<p><em>Exemple :</em> flèches dans 20, 1 et 18 → segments côte à côte → total des points ajoutés. Doubles et triples comptent aussi.</p>
+
+<p><strong>La Suite :</strong> Les flèches doivent être dans des segments qui se suivent (ex : 14, 15, 16). Si réussi, on ajoute le total. Sinon, le score est divisé par 2.</p>
+
+<p><strong>La Couleur :</strong> Les 3 flèches doivent être dans des couleurs différentes (noir, blanc, rouge, vert). Si 2 flèches sont de la même couleur : échec → division par 2. Si réussi → ajout des points.</p>
+
+<p><strong>Le Double :</strong> Au moins une flèche doit toucher une zone double. Réussi → on ajoute le score. Échec → on divise.</p>
+
+<p><strong>Le Triple :</strong> Même principe que le double mais en zone triple.</p>
+
+<p><strong>Le 57 :</strong> Il faut faire un total de 57 points avec 1 à 3 flèches. Si réussi → +57 points. Échec → division par 2.</p>
+
+<p><strong>Le Centre :</strong> Il faut toucher le centre (la demi-bulle est comptée). Réussi → ajout des points. Échec → division du score.</p>
+
+<p><strong>Bonne partie à vous !</strong></p>
+
+
+            <CENTER><button onclick="cacherRegles()" class="buttonGeneral" >Bien Compris, allons jouer !</button></CENTER>
+        </div>
+    </div>
+
 
     <h1> Kapital </h1>
     <CENTER><button onclick="afficherRegles()"> Voir les règles </button></CENTER>
@@ -70,44 +111,6 @@
 
 
         <button onclick="lancerPartie()"> LANCER PARTIE </button>
-    </div>
-
-    <div id="regle" class="hide">
-        <h3>Régle :</h3>
-        <span>
-            <p>L'Horloge Comptée est un jeu d'adresse qui vous fait viser toutes les zones de la cible.</p>
-
-            <p>Vous avez 21 lancers de 3 fléchettes chacun. Chaque lancer comporte trois fléchettes. Pour le premier
-                lancer, vous devez viser le chiffre 1, pour le second, le chiffre 2, et ainsi de suite.</p>
-
-            <p>Concernant le comptage des points :
-            <ul>
-                <li>La zone simple vaut 1 point,</li>
-                <li>La zone des doubles vaut 2 points,</li>
-                <li>La zone des triples vaut 3 points,</li>
-                <li>Et cela, quel que soit le tour où vous êtes.</li>
-            </ul>
-            </p>
-
-            <p>Un exemple pour mieux comprendre :
-                <br>Tour n°1, vous devez viser le numéro 1.
-                <br>Première fléchette : vous faites double 1 (2 points),
-                <br>Deuxième fléchette : 1 simple (1 point),
-                <br>Troisième fléchette : vous tombez dans le 20 (0 point).
-                <br>Vous marquez donc 2 + 1 + 0 = 3 points. Vous cliquerez alors sur le chiffre 3.
-            </p>
-
-            <p>Petite particularité concernant la bulle :
-            <ul>
-                <li>Une demi-bulle vaut 2 points,</li>
-                <li>Une double-bulle vaut 4 points.</li>
-            </ul>
-            </p>
-
-            <p>Bonne partie à vous !</p>
-        </span>
-
-        <button onclick="cacherRegles()"> Bien Compris, tu peux cacher les règles ! </button>
     </div>
 
     <div id="contenu" class="hide">
@@ -525,13 +528,21 @@
             
         }
 
-        function afficherRegles() {
-            $('#regle').show();
+         function afficherRegles() {
+            $('#modalRegles').show();
         }
 
         function cacherRegles() {
-            $('#regle').hide();
+            $('#modalRegles').hide();
         }
+
+        
+        // Fermer la modal si clic à l'extérieur
+        $(window).on('click', function (event) {
+            if (event.target.id === 'modalRegles') {
+                cacherRegles();
+            }
+        });
     </script>
 
 
