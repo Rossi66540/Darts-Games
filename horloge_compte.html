@@ -51,7 +51,8 @@
 
             <p>Bonne partie à vous !</p>
 
-            <CENTER><button onclick="cacherRegles()" class="buttonGeneral" >Bien Compris, allons jouer !</button></CENTER>
+            <CENTER><button onclick="cacherRegles()" class="buttonGeneral">Bien Compris, allons jouer !</button>
+            </CENTER>
         </div>
     </div>
 
@@ -87,18 +88,26 @@
             <div id="scorePossible">
 
             </div>
-            <div id="divCancel" class="hide">                
+            <div id="divCancel" class="hide">
             </div>
         </div>
     </div>
 
     <div id="divFin" class="hide">
-        <button onclick="window.location.href='index.html'"> Faire un autre Jeu </button>
-        <button onclick="location.reload()"> Rejouer à l'horloge comptée </button>
+        <button class="buttonGeneral" onclick="window.location.href='index.html'"> Faire un autre Jeu </button>
+        <button class="buttonGeneral" onclick="location.reload()"> Rejouer à l'horloge comptée </button>
     </div>
 
 
     <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        var nomUser = getCookie("session");
+                
         var saisieNormale = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         var saisieBulle = [0, 2, 4, 6, 8, 10, 12];
 
@@ -109,57 +118,95 @@
         var scoreActuel = 0;
         var indiceJoueurActuel = 0;
 
+        var idGagnant = 0;
+        var nbrJoueurs = 0;
+
         function genererTableauNom() {
             let nbrJrs = $('#nbJrs').val();
             $('#tableJoueurs').empty();
 
-            for (i = 1; i <= nbrJrs; i++) {
-                let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" style="width:150px;" id="in_pseudo_' + i + '"/></td></tr>';
-                $('#tableJoueurs').append(html);
-            }
-            $('#in_pseudo_1').focus();
+            $.ajax({
+                url: '/models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    for (let i = 1; i <= nbrJrs; i++) {
+                        let select = '<select class="pseudo" id="in_pseudo_' + i + '" style="width:160px;">';
+                        select += '<option value=""> - - - </option>';
+                        data.forEach(function (user) {
+                            let selected = "";
+                            if(i == 1){
+                                if(user.pseudo == nomUser){
+                                    selected = "selected";
+                                }
+                            }
+                            select += '<option value="' + user.pseudo + '" data-id="' + user.id + '" '+selected+'>' + user.pseudo + '</option>';
+                        });
+                        select += '</select>';
+
+                        let html = '<tr><td>Joueur ' + i + '</td><td>' + select + '</td></tr>';
+                        $('#tableJoueurs').append(html);
+                    }
+
+                    $('#in_pseudo_1').focus();
+                },
+                error: function () {
+                    alert("Erreur lors du chargement des joueurs.");
+                }
+            });
         }
 
         function lancerPartie() {
-            //cache entete
+            nbrJoueurs = $('#nbJrs').val();
             $('#entete').hide();
-            //affichage contenu
             $('#contenu').show();
 
-            //tirage au sort des joueurs
-            // Vide le tableau des joueurs
             joueurs = [];
 
-            // Récupère tous les pseudos
             $('.pseudo').each(function () {
-                let pseudo = $(this).val().trim();
-                if (pseudo !== "") {
-                    joueurs.push(pseudo);
+                // Récupérer l'option sélectionnée
+                let selectedOption = $(this).find('option:selected');
+                let id_user = selectedOption.data('id');
+                if (id_user !== undefined) {
+                    joueurs.push(id_user);  // on stocke l'id_user et pas le pseudo
                 }
             });
 
-            // Mélange aléatoirement les joueurs (algorithme de Fisher-Yates)
+            // Mélange des joueurs (id_user)
             for (let i = joueurs.length - 1; i > 0; i--) {
                 let j = Math.floor(Math.random() * (i + 1));
                 [joueurs[i], joueurs[j]] = [joueurs[j], joueurs[i]];
             }
 
-
+            // Construire l'entête du tableau avec le pseudo récupéré à partir des id_user
             let enteteHtml = "<tr><td></td>";
-            //let bodyHtmlDebut = "<tr><td></td>";
             let totauxHtml = "<tr><td>Total</td>";
-            joueurs.forEach(function (joueur, index) {
-                enteteHtml += "<td>" + joueur + "</td>";
-                // bodyHtmlDebut += "<td id='score_" + score_actuel + "_" + index + "'></td>";
+
+            // Pour récupérer les pseudos associés aux id_user, on peut les chercher dans les selects.
+            // Mais ils ne sont plus directement accessibles, on peut stocker un mapping id->pseudo au lancement ou via ajax.
+
+            // Ici je suppose qu’on peut récupérer le pseudo à partir des selects d’origine:
+            // On crée un mapping id_user => pseudo
+            let mappingIdPseudo = {};
+            $('.pseudo').each(function () {
+                let pseudo = $(this).find('option:selected').text();
+                let id = $(this).find('option:selected').data('id');
+                if (id !== undefined) {
+                    mappingIdPseudo[id] = pseudo;
+                }
+            });
+
+            joueurs.forEach(function (id_user, index) {
+                let pseudo = mappingIdPseudo[id_user] || ("Joueur " + (index + 1));
+                enteteHtml += "<td>" + pseudo + "</td>";
                 totauxHtml += '<td><label class="total" id="total_' + index + '"></label></td>';
             });
+
             enteteHtml += "</tr>";
 
-            $('#tableScore thead').append(enteteHtml);
-            //$('#tableScore tbody').append(bodyHtmlDebut);
-            $('#tableScore tfoot').append(totauxHtml);
+            $('#tableScore thead').empty().append(enteteHtml);
+            $('#tableScore tfoot').empty().append(totauxHtml);
 
-            //$('#score_1_1').append()
             ajouteLigne();
             afficheDivSaisiePossible();
         }
@@ -167,6 +214,7 @@
         function ajouteLigne() {
             scoreActuel++;
             if (scoreActuel == 22) {
+                savePartie();
                 alert('FIN DE LA PARTIE !');
                 cacheDivSaisiePossible();
                 $('#divFin').show();
@@ -176,7 +224,6 @@
                 if (scoreActuel == 21) {
                     scoreStr = "Bulle";
                 }
-                console.log(joueurs);
                 let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
                 joueurs.forEach(function (joueur, index) {
                     htmlLigne += "<td id='score_" + scoreActuel + "_" + (index) + "'></td>";
@@ -185,6 +232,59 @@
                 htmlLigne += "</tr>";
                 $('#tableScore tbody').append(htmlLigne);
             }
+        }
+
+        function savePartie() {
+            let type = 1;
+            let nbrJoueur = nbrJoueurs;
+            let maxScore = 0;
+            let indiceGagnant = -1;
+
+            totaux.forEach((score, index) => {
+                if (score > maxScore) {
+                    maxScore = score;
+                    indiceGagnant = index;
+                }
+            });
+
+            idGagnant = joueurs[indiceGagnant];
+                   
+            let detailScores = [];           
+            joueurs.forEach(function (joueur, index) {              
+                let scoreJoueur = {
+                    id_user: joueur,
+                    total: totaux[index],
+                    place: "1",
+                    details: resultats[index]
+                };
+                detailScores.push(scoreJoueur);
+            });
+
+            let dataToSend = {
+                type: type,
+                nbr_joueur: nbrJoueur,
+                id_gagnant: idGagnant,
+                scores: totaux,
+                resultats: detailScores // tableau des scores
+            };
+
+            // Appel AJAX en POST vers /save_parties.php
+            fetch('/save_partie.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // On envoie du JSON
+                },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => response.json())  // On attend une réponse JSON (à adapter si ce n'est pas JSON)
+                .then(data => {
+                    console.log('Partie sauvegardée avec succès:', data);
+                    // ici tu peux gérer la suite après sauvegarde
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la sauvegarde:', error);
+                });
+
         }
 
         function afficherRegles() {

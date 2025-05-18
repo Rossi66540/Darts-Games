@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Rechercher l'utilisateur dans la base de données
-    $stmt = $mysqli->prepare("SELECT pseudo, mdp FROM user WHERE mail = ?");
+    $stmt = $mysqli->prepare("SELECT id,pseudo, mdp FROM user WHERE mail = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['pseudo'] = $user['pseudo'];
 
             // Répondre avec succès et pseudo de l'utilisateur
-            echo json_encode(["success" => true, "pseudo" => $user['pseudo']]);
+            echo json_encode(["success" => true, "id" => $user['id'], "pseudo" => $user['pseudo']]);
+            
         } else {
             // Mot de passe incorrect
             echo json_encode(["success" => false, "error" => "Mot de passe incorrect."]);

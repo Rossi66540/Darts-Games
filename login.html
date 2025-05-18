@@ -49,6 +49,7 @@
   
       if (result.success) {
         setCookie("session", result.pseudo, 1);  // Créer un cookie de session avec le pseudo        
+        setCookie("idUser", result.id, 1);  // Créer un cookie de session avec le pseudo        
         window.location.href = "dashboard.html";  // Redirection vers le tableau de bord
       } else {
         alert("Identifiants incorrects !");
