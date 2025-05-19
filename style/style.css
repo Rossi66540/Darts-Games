@@ -67,6 +67,71 @@ h1 {
     font-size: 2rem;
 }
 
+.tableStat {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.tableStat thead {
+    background-color: #E6C900;
+    color: white;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.tableStat th, .tableStat td {
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #eee;
+}
+
+.tableStat tr:last-child td {
+    border-bottom: none;
+}
+
+.tableStat tbody tr:nth-child(even) {
+    background-color: #f1f7ff;
+}
+
+/* @media screen and (max-width: 600px) {
+    .tableStat thead {
+        display: none;
+    }
+
+    .tableStat, .tableStat tbody, .tableStat tr, .tableStat td {
+        display: block;
+        width: 100%;
+    }
+
+    .tableStat tr {
+        margin-bottom: 16px;
+        background-color: white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        border-radius: 8px;
+        padding: 12px;
+    }
+
+    .tableStat td {
+        text-align: left;
+        padding: 8px 12px;
+        position: relative;
+    }
+
+    .tableStat td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #555;
+        display: block;
+        margin-bottom: 4px;
+    }
+} */
+
 /* ========== Conteneurs principaux ========== */
 form,
 #regle,
@@ -182,6 +247,23 @@ button:hover,
 .buttonMode:active {
     transform: translateY(2px);
     box-shadow: none;
+}
+
+.buttonMini {
+    background-color: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    margin: 5px 8px 0 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width:100px;
+}
+
+.buttonMini:hover {
+    background-color: #ddd;
 }
 
 /* ========== Saisie score ========== */

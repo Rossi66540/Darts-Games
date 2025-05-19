@@ -57,40 +57,53 @@
         <div class="modal-content">
             <span class="close" onclick="cacherRegles()">&times;</span>
             <h3>Règle :</h3>
-<p>Le principe du jeu est le suivant : à un ou plusieurs joueurs, il y a 15 objectifs à chaque partie, qui se joue en une seule volée :</p>
+            <p>Le principe du jeu est le suivant : à un ou plusieurs joueurs, il y a 15 objectifs à chaque partie, qui
+                se joue en une seule volée :</p>
 
-<p>Les 15 objectifs sont : le 20, le côte à côte, le 19, la suite, le 18, la couleur, le 17, le double, le 16, le triple, le 15, le 57, le 14 et le centre.</p>
-
-
-<p>Le gagnant est celui qui, à la fin de la partie, a le score le plus élevé.</p>
-
-<p>Les objectifs numérotés de 20 à 15 représentent les segments de la cible. L’objectif est que, sur 3 flèches lancées, au moins une atteigne le segment indiqué (simple, double ou triple).</p>
-
-<p>Si c’est réussi, on ajoute la somme des points faits dans ce segment au score de départ.</p>
-
-<p><strong>Attention :</strong> Si aucune flèche n’est dans le segment demandé, le score est divisé par 2. Si le résultat est décimal, on arrondit au nombre supérieur (ex : 45 / 2 = 22.5 → 23).</p>
-
-<h4>Objectifs particuliers :</h4>
-
-<p><strong>Côte à Côte :</strong> Les 3 flèches doivent toucher des segments voisins. Si c’est réussi, on additionne les points. Sinon, le score est divisé par 2.</p>
-<p><em>Exemple :</em> flèches dans 20, 1 et 18 → segments côte à côte → total des points ajoutés. Doubles et triples comptent aussi.</p>
-
-<p><strong>La Suite :</strong> Les flèches doivent être dans des segments qui se suivent (ex : 14, 15, 16). Si réussi, on ajoute le total. Sinon, le score est divisé par 2.</p>
-
-<p><strong>La Couleur :</strong> Les 3 flèches doivent être dans des couleurs différentes (noir, blanc, rouge, vert). Si 2 flèches sont de la même couleur : échec → division par 2. Si réussi → ajout des points.</p>
-
-<p><strong>Le Double :</strong> Au moins une flèche doit toucher une zone double. Réussi → on ajoute le score. Échec → on divise.</p>
-
-<p><strong>Le Triple :</strong> Même principe que le double mais en zone triple.</p>
-
-<p><strong>Le 57 :</strong> Il faut faire un total de 57 points avec 1 à 3 flèches. Si réussi → +57 points. Échec → division par 2.</p>
-
-<p><strong>Le Centre :</strong> Il faut toucher le centre (la demi-bulle est comptée). Réussi → ajout des points. Échec → division du score.</p>
-
-<p><strong>Bonne partie à vous !</strong></p>
+            <p>Les 15 objectifs sont : le 20, le côte à côte, le 19, la suite, le 18, la couleur, le 17, le double, le
+                16, le triple, le 15, le 57, le 14 et le centre.</p>
 
 
-            <CENTER><button onclick="cacherRegles()" class="buttonGeneral" >Bien Compris, allons jouer !</button></CENTER>
+            <p>Le gagnant est celui qui, à la fin de la partie, a le score le plus élevé.</p>
+
+            <p>Les objectifs numérotés de 20 à 15 représentent les segments de la cible. L’objectif est que, sur 3
+                flèches lancées, au moins une atteigne le segment indiqué (simple, double ou triple).</p>
+
+            <p>Si c’est réussi, on ajoute la somme des points faits dans ce segment au score de départ.</p>
+
+            <p><strong>Attention :</strong> Si aucune flèche n’est dans le segment demandé, le score est divisé par 2.
+                Si le résultat est décimal, on arrondit au nombre supérieur (ex : 45 / 2 = 22.5 → 23).</p>
+
+            <h4>Objectifs particuliers :</h4>
+
+            <p><strong>Côte à Côte :</strong> Les 3 flèches doivent toucher des segments voisins. Si c’est réussi, on
+                additionne les points. Sinon, le score est divisé par 2.</p>
+            <p><em>Exemple :</em> flèches dans 20, 1 et 18 → segments côte à côte → total des points ajoutés. Doubles et
+                triples comptent aussi.</p>
+
+            <p><strong>La Suite :</strong> Les flèches doivent être dans des segments qui se suivent (ex : 14, 15, 16).
+                Si réussi, on ajoute le total. Sinon, le score est divisé par 2.</p>
+
+            <p><strong>La Couleur :</strong> Les 3 flèches doivent être dans des couleurs différentes (noir, blanc,
+                rouge, vert). Si 2 flèches sont de la même couleur : échec → division par 2. Si réussi → ajout des
+                points.</p>
+
+            <p><strong>Le Double :</strong> Au moins une flèche doit toucher une zone double. Réussi → on ajoute le
+                score. Échec → on divise.</p>
+
+            <p><strong>Le Triple :</strong> Même principe que le double mais en zone triple.</p>
+
+            <p><strong>Le 57 :</strong> Il faut faire un total de 57 points avec 1 à 3 flèches. Si réussi → +57 points.
+                Échec → division par 2.</p>
+
+            <p><strong>Le Centre :</strong> Il faut toucher le centre (la demi-bulle est comptée). Réussi → ajout des
+                points. Échec → division du score.</p>
+
+            <p><strong>Bonne partie à vous !</strong></p>
+
+
+            <CENTER><button onclick="cacherRegles()" class="buttonGeneral">Bien Compris, allons jouer !</button>
+            </CENTER>
         </div>
     </div>
 
@@ -149,11 +162,19 @@
 
 
     <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        var nomUser = getCookie("session");
         var scorePossible = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, "B"];
         var objectif = [20, "Cote", 19, "Suite", 18, "Couleur", 17, "Double", 16, "Triple", 15, 57, 14, "B"];
 
         var joueurs = [];
         var resultats = [];
+        var totaux = [];
         var flechettes = [];
 
 
@@ -170,10 +191,40 @@
             let nbrJrs = $('#nbJrs').val();
             $('#tableJoueurs').empty();
 
-            for (i = 1; i <= nbrJrs; i++) {
+            $.ajax({
+                url: '/models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    for (let i = 1; i <= nbrJrs; i++) {
+                        let select = '<select class="pseudo" id="in_pseudo_' + i + '" style="width:160px;">';
+                        select += '<option value=""> - - - </option>';
+                        data.forEach(function (user) {
+                            let selected = "";
+                            if (i == 1) {
+                                if (user.pseudo == nomUser) {
+                                    selected = "selected";
+                                }
+                            }
+                            select += '<option value="' + user.pseudo + '" data-id="' + user.id + '" ' + selected + '>' + user.pseudo + '</option>';
+                        });
+                        select += '</select>';
+
+                        let html = '<tr><td>Joueur ' + i + '</td><td>' + select + '</td></tr>';
+                        $('#tableJoueurs').append(html);
+                    }
+
+                    $('#in_pseudo_1').focus();
+                },
+                error: function () {
+                    alert("Erreur lors du chargement des joueurs.");
+                }
+            });
+
+            /*for (i = 1; i <= nbrJrs; i++) {
                 let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" style="width:150px;" id="in_pseudo_' + i + '"/></td></tr>';
                 $('#tableJoueurs').append(html);
-            }
+            }*/
             $('#in_pseudo_1').focus();
         }
 
@@ -189,9 +240,10 @@
 
             // Récupère tous les pseudos
             $('.pseudo').each(function () {
-                let pseudo = $(this).val().trim();
-                if (pseudo !== "") {
-                    joueurs.push(pseudo);
+                let selectedOption = $(this).find('option:selected');
+                let id_user = selectedOption.data('id');
+                if (id_user !== undefined) {
+                    joueurs.push(id_user);  // on stocke l'id_user et pas le pseudo
                 }
             });
 
@@ -201,13 +253,27 @@
                 [joueurs[i], joueurs[j]] = [joueurs[j], joueurs[i]];
             }
 
-
             let enteteHtml = "<tr><td></td>";
             let bodyHtmlDebut = "<tr><td></td>";
             let totauxHtml = "<tr><td>Total</td>";
-            joueurs.forEach(function (joueur, index) {
-                enteteHtml += "<td>" + joueur + "</td>";
+
+            let mappingIdPseudo = {};
+            $('.pseudo').each(function () {
+                let pseudo = $(this).find('option:selected').text();
+                let id = $(this).find('option:selected').data('id');
+                if (id !== undefined) {
+                    mappingIdPseudo[id] = pseudo;
+                }
             });
+            
+            joueurs.forEach(function (id_user, index) {
+                let pseudo = mappingIdPseudo[id_user] || ("Joueur " + (index + 1));
+                enteteHtml += "<td>" + pseudo + "</td>";                
+            });
+
+            /*joueurs.forEach(function (joueur, index) {
+                enteteHtml += "<td>" + joueur + "</td>";
+            });*/
             enteteHtml += "</tr>";
 
             $('#tableScore thead').append(enteteHtml);
@@ -219,8 +285,10 @@
 
         function ajouteLigne() {
             if (objectifActuel == 13) {
+                savePartie();
                 alert('FIN DE LA PARTIE !');
-                cacheDivSaisiePossible();
+                //cacheDivSaisiePossible();
+                $('#divScore').hide();
                 $('#divFin').show();
             } else {
                 objectifActuel++;
@@ -238,6 +306,54 @@
                 }
             }
         }
+        function savePartie() {
+            // Trouver le gagnant (celui avec le score max)
+            let maxScore = 0;
+            let indiceGagnant = -1;
+
+            joueurs.forEach(function (joueur,index){
+                let score = resultats[index][13];
+                if(score > maxScore){
+                    maxScore = score;
+                    indiceGagnant = index;
+                }   
+            });
+            resultats[indiceJoueurActuel]           
+
+            let idGagnant = joueurs[indiceGagnant];
+
+            // Construire un tableau des détails des scores
+            let detailScores = joueurs.map((joueur, idx) => ({
+                id_user: joueur,
+                total: resultats[idx][13],
+                place:"1",
+                details: resultats[idx] || []
+            }));
+
+            // Préparer les données à envoyer
+            let dataToSend = {
+                type: 2,
+                nbr_joueur: joueurs.length,
+                id_gagnant: idGagnant,
+                scores: totaux,
+                resultats: detailScores
+            };
+
+            fetch('/save_partie.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Erreur réseau");
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Partie sauvegardée avec succès:', data);
+                    // ici tu peux ajouter ce que tu veux faire après la sauvegarde (ex : afficher un message, rediriger...)
+                });
+        }
+
 
         function setMode(value) {
             modeActuel = value;
@@ -258,7 +374,7 @@
                 }
                 html += "<button class='buttonScore' onclick='saisieScore(" + val + ")'>" + sc + "</button>";
             });
-            $('#scorePossible').append(html);            
+            $('#scorePossible').append(html);
         }
 
 
@@ -309,7 +425,7 @@
                     cibleZone[j],
                     cibleZone[(j + 1) % cibleZone.length],
                     cibleZone[(j + 2) % cibleZone.length]
-                ];                
+                ];
 
                 // Si les trois valeurs (peu importe l'ordre) sont dans la séquence
                 if (sequence.includes(f1) && sequence.includes(f2) && sequence.includes(f3)) {
@@ -479,7 +595,7 @@
                         flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
                     }
                     break;
-            }            
+            }
 
             if (indiceFlechette == 3) {
                 if (scoreEncours == 0) {
@@ -524,11 +640,11 @@
             $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append('<label class="saisie"></label>');
         }
 
-        function annulerScore(){
-            
+        function annulerScore() {
+
         }
 
-         function afficherRegles() {
+        function afficherRegles() {
             $('#modalRegles').show();
         }
 
@@ -536,7 +652,7 @@
             $('#modalRegles').hide();
         }
 
-        
+
         // Fermer la modal si clic à l'extérieur
         $(window).on('click', function (event) {
             if (event.target.id === 'modalRegles') {

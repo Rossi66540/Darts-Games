@@ -1,10 +1,6 @@
 <?php
 include 'config.php';
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $json = file_get_contents('php://input');
 
 // Convertit le JSON en tableau associatif PHP
@@ -68,5 +64,5 @@ foreach ($resultats as $score) {
 $stmt_score->close();
 $mysqli->close();
 
-echo "✅ Partie enregistrée avec succès (ID : $id_partie)";
+// echo "✅ Partie enregistrée avec succès (ID : $id_partie)";
 ?>

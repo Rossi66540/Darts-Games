@@ -18,7 +18,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Darts-Games">
-
 </head>
 
 
@@ -70,11 +69,17 @@
                     Kapital
                 </button>
             </li>
+            <li>
+                <button class="buttonGeneral" style="min-width: 180px;background-color:lightgreen" onclick="window.location.href='stats.php';">
+                    Statistiques
+                </button>
+            </li>
         </ul>
     </div>
-    <!-- Bouton de déconnexion -->
-    <button class="buttonGeneral" onclick="logout()" style="margin-top: 20px;">Déconnexion</button>
-    <button class="buttonGeneral" onclick="viderCache()" style="margin-top: 20px;">Vider Cache</button>
+    <div id="piedPage" style="display:flex;">        
+        <button class="buttonMini" onclick="logout()">Déconnexion</button>
+        <button class="buttonMini" onclick="viderCache()">Vider Cache</button>
+    </div>
 
     <script src="js/sessionCheck.js"></script>
 
