@@ -8,6 +8,10 @@
     <link rel="apple-touch-icon" href="favicon.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 </head>
 <style>
     #scorePossible {
@@ -17,6 +21,17 @@
         gap: 8px;
         padding: 10px;
     }
+
+    @media (max-width: 480px) {
+        #scorePossible {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            /* 5 colonnes de taille égale */
+            gap: 8px;
+            padding: 10px;
+        }
+    }
+
 
     #divCancel {
         display: grid;
@@ -115,7 +130,7 @@
         <h3>Nouvelle Partie:</h3>
 
         <label>Nombre Joueurs :</label>
-        <input id="nbJrs" style="width:60px;" type="number" onchange="genererTableauNom()" />
+        <input id="nbJrs" style="width:60px;" type="text" onchange="genererTableauNom()" />
 
         <table id="tableJoueurs">
             <tbody></tbody>
@@ -131,6 +146,13 @@
             <thead></thead>
             <tbody></tbody>
         </table>
+
+        <div id="divScoreActuel">
+            <label id="lb_1"> - </label>
+            <label id="lb_2"> - </label>
+            <label id="lb_3"> - </label>
+
+        </div>
 
         <div id="divScore" style="flex-direction:column;">
             <div id="scorePossible">
@@ -265,10 +287,10 @@
                     mappingIdPseudo[id] = pseudo;
                 }
             });
-            
+
             joueurs.forEach(function (id_user, index) {
                 let pseudo = mappingIdPseudo[id_user] || ("Joueur " + (index + 1));
-                enteteHtml += "<td>" + pseudo + "</td>";                
+                enteteHtml += "<td>" + pseudo + "</td>";
             });
 
             /*joueurs.forEach(function (joueur, index) {
@@ -294,6 +316,10 @@
                 objectifActuel++;
                 let scoreStr = objectif[objectifActuel];
 
+                $('#lb_1').html(" - ");
+                $('#lb_2').html(" - ");
+                $('#lb_3').html(" - ");
+
                 let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
                 joueurs.forEach(function (joueur, index) {
                     htmlLigne += "<td id='score_" + objectifActuel + "_" + (index) + "'></td>";
@@ -311,14 +337,14 @@
             let maxScore = 0;
             let indiceGagnant = -1;
 
-            joueurs.forEach(function (joueur,index){
+            joueurs.forEach(function (joueur, index) {
                 let score = resultats[index][13];
-                if(score > maxScore){
+                if (score > maxScore) {
                     maxScore = score;
                     indiceGagnant = index;
-                }   
+                }
             });
-            resultats[indiceJoueurActuel]           
+            resultats[indiceJoueurActuel]
 
             let idGagnant = joueurs[indiceGagnant];
 
@@ -326,7 +352,7 @@
             let detailScores = joueurs.map((joueur, idx) => ({
                 id_user: joueur,
                 total: resultats[idx][13],
-                place:"1",
+                place: "1",
                 details: resultats[idx] || []
             }));
 
@@ -470,6 +496,18 @@
                 flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [1, 0];
             }
             flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+
+            let text = "";
+            if (modeActuel == 2) {
+                text += 'D ';
+            }
+
+            if (modeActuel == 3) {
+                text += 'T ';
+            }
+            text += valeur;
+
+            $('#lb_' + indiceFlechette).html(text);
 
             if (indiceFlechette == 1) {
                 scoreEncours = 0;
@@ -634,6 +672,9 @@
                 indiceJoueurActuel = 0;
             } else {
                 indiceJoueurActuel++;
+                $('#lb_1').html(" - ");
+                $('#lb_2').html(" - ");
+                $('#lb_3').html(" - ");
             }
 
             $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
@@ -641,8 +682,117 @@
         }
 
         function annulerScore() {
+            // Si on est au tout début, rien à annuler
+            if (indiceJoueurActuel === 0 && objectifActuel === 0 && indiceFlechette === 1) {
+                alert("Rien à annuler !");
+                return;
+            }
 
+            // On recule d'une fléchette
+            if (indiceFlechette === 1) {
+                // On doit reculer au joueur précédent ou à l'objectif précédent
+                if (indiceJoueurActuel === 0) {
+                    // On recule à l'objectif précédent
+                    $('#tableScore tbody tr:last').remove();
+                    if (objectifActuel === 0) {
+                        // On est au début, rien à annuler
+                        alert("Rien à annuler !");
+                        return;
+                    }
+                    objectifActuel--;
+                    // Le dernier joueur est le dernier de la liste
+                    indiceJoueurActuel = joueurs.length - 1;
+                } else {
+                    // On recule au joueur précédent du même objectif
+                    indiceJoueurActuel--;
+                }
+                // On revient à la dernière fléchette (3)
+                indiceFlechette = 3;
+            } else {
+                // Sinon on recule simplement la fléchette
+                indiceFlechette--;
+            }
+
+            // Supprimer la dernière saisie dans flechettes
+            if (
+                flechettes[indiceJoueurActuel] &&
+                flechettes[indiceJoueurActuel][objectifActuel] &&
+                flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette]
+            ) {
+                delete flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette];
+            }
+
+            // Mettre à jour l'affichage des labels de fléchette (lb_1, lb_2, lb_3)
+            for (let i = 1; i <= 3; i++) {
+                if (
+                    flechettes[indiceJoueurActuel] &&
+                    flechettes[indiceJoueurActuel][objectifActuel] &&
+                    flechettes[indiceJoueurActuel][objectifActuel][i]
+                ) {
+                    let [mode, val] = flechettes[indiceJoueurActuel][objectifActuel][i];
+                    let text = "";
+                    if (mode === 2) text += "D ";
+                    else if (mode === 3) text += "T ";
+                    text += val;
+                    $('#lb_' + i).html(text);
+                } else {
+                    $('#lb_' + i).html(" - ");
+                }
+            }
+
+            // Recalculer scoreEncours à partir de flechettes restantes sur cette case
+            scoreEncours = 0;
+            if (flechettes[indiceJoueurActuel] && flechettes[indiceJoueurActuel][objectifActuel]) {
+                for (let i = 1; i <= 3; i++) {
+                    if (flechettes[indiceJoueurActuel][objectifActuel][i]) {
+                        let [mode, val] = flechettes[indiceJoueurActuel][objectifActuel][i];
+                        scoreEncours += mode * val;
+                    }
+                }
+            }
+
+            // Mettre à jour le tableau des résultats (resultats)
+            if (indiceFlechette !== 3) {
+                // Si on est en train de saisir fléchettes (pas encore finie), on ne met pas à jour le résultat final
+                // (optionnel selon ta logique)
+            } else {
+                // Si on vient d'annuler après avoir fini une case, on doit recalculer le score à la case actuelle
+
+                if (objectifActuel === 0) {
+                    // Premier objectif
+                    resultats[indiceJoueurActuel][objectifActuel] = scoreEncours;
+                } else {
+                    // Sinon résultat = résultat objectif précédent + scoreEncours
+                    if (resultats[indiceJoueurActuel][objectifActuel - 1] === undefined) {
+                        resultats[indiceJoueurActuel][objectifActuel - 1] = 0;
+                    }
+                    resultats[indiceJoueurActuel][objectifActuel] = resultats[indiceJoueurActuel][objectifActuel - 1] + scoreEncours;
+                }
+            }
+
+            // Mise à jour visuelle de la case score dans le tableau
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
+
+            if (resultats[indiceJoueurActuel] && resultats[indiceJoueurActuel][objectifActuel] !== undefined) {
+                let color = "#2ecc71";
+                if (
+                    objectifActuel > 0 &&
+                    resultats[indiceJoueurActuel][objectifActuel] < resultats[indiceJoueurActuel][objectifActuel - 1]
+                ) {
+                    color = "red";
+                }
+                $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append(
+                    "<label style='color:" + color + "'  class='resultat'>" + resultats[indiceJoueurActuel][objectifActuel] + "</label>"
+                );
+            }
+
+            // Mise à jour des labels de score (lb_1, lb_2, lb_3) déjà faite un peu plus haut
+
+            // Remettre le mode sur Simple par défaut (1)
+            setMode(1);
         }
+
+
 
         function afficherRegles() {
             $('#modalRegles').show();

@@ -75,27 +75,28 @@ function getTopJoueur($type)
 {
 
     $DB_HOST = 'localhost';
-$DB_USER = 'fvasnmcf_root';
-// $DB_PORT = 3306;
-$DB_PASS = 'Darts66540!';
-$DB_NAME = 'fvasnmcf_darts-games';
+    $DB_USER = 'fvasnmcf_root';
+    // $DB_PORT = 3306;
+    $DB_PASS = 'Darts66540!';
+    $DB_NAME = 'fvasnmcf_darts-games';
 
-$mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+    $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
-    $req = "SELECT
-        user.pseudo,
-        MAX(scores.total) as top, 
-        DATE_FORMAT(parties.date,'%d/%m/%Y') as date
+    $req = "SELECT 
+    u.pseudo, 
+    s.total AS top, 
+    DATE_FORMAT(p.date, '%d/%m/%Y') AS date
+FROM 
+    scores s
+INNER JOIN parties p ON s.id_partie = p.id
+INNER JOIN jeu j ON p.type = j.id
+INNER JOIN user u ON s.id_user = u.id
+WHERE 
+    j.id = " . $type . "
+ORDER BY 
+    s.total DESC
+LIMIT 1";
 
-    FROM    
-        jeu    
-    INNER JOIN parties  ON parties.type = jeu.id
-    INNER JOIN scores   ON scores.id_partie = parties.id
-    INNER JOIN user     ON user.id = scores.id_user
-
-    WHERE
-        jeu.id= " . $type . "   
-    ";
 
     $info = "";
     $result = mysqli_query($mysqli, $req);
@@ -140,9 +141,15 @@ $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
 
     <div id="statPerso">
-        <h1>Stats de <?= $_COOKIE['session'] ?> :</h1>
+        <h1>Stats</h1>
 
-        <table class="tableStat">
+
+
+        <select id="selectUser" onChange='chargeStat()'>
+
+        </select>
+
+        <table class="tableStat" id="tbStatPerso">
             <thead>
                 <tr>
                     <th>Jeu</th>
@@ -153,15 +160,7 @@ $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
                 </tr>
             </thead>
             <tbody>
-                <?php
-                foreach ($statsPerso as $stat) {
-                    $ligne = "<tr><td>" . $stat['nom'] . "</td><td>" . $stat['joues'] . "</td><td>" . $stat['gagnes'] . "</td><td>";
-                    $ligne .= round($stat['gagnes'] / $stat['joues'] * 100, 2) . "%";
-                    $ligne .= "</td><td>" . $stat['top'] . "</td></tr>";
-
-                    echo $ligne;
-                }
-                ?>
+                
             </tbody>
         </table>
     </div>
@@ -189,6 +188,82 @@ $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
         </table>
 
     </div>
+
+
+    <script>
+        var nomUser = getCookie("session");
+        var idUser = "<?= $idUser ?>";
+
+         function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        $(document).ready(function() {
+            genererSelect(idUser);
+            chargeStat();
+        });
+
+
+        function genererSelect(idUser) {
+
+            $('#selectUser').empty();
+            $.ajax({
+                url: '/models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    let options = "";
+                    options += '<option value=""> - - - </option>';
+                    data.forEach(function(user) {
+                        let selected = "";
+                        if (user.pseudo == nomUser) {
+                            selected = "selected";
+                        }
+                        options += '<option value="' + user.id + '" data-id="' + user.id + '" ' + selected + '>' + user.pseudo + '</option>';
+                    });
+                    $('#selectUser').append(options);
+
+                }
+            });
+        }
+
+        function chargeStat() {
+            idUser = $('#selectUser').val();
+            console.log(idUser);
+            $('#tbStatPerso tbody').empty();
+            $.ajax({
+                url: '/models/get_stat_perso.php',
+                type: 'GET',
+                data: {
+                    idUser: idUser
+                }, 
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        let html = '';
+
+                        response.data.forEach(function(stat) {
+                            let taux = (stat.joues !== ' - ' && stat.joues > 0) ?
+                                (parseInt(stat.gagnes) / parseInt(stat.joues) * 100).toFixed(2) + '%' :
+                                '-';
+
+                            html += "<tr><td>" + stat.nom + "</td><td>" + stat.joues + "</td><td>" + stat.gagnes + "</td><td>" + taux + "</td><td>" + stat.top + "</td></tr>";
+                        });
+
+                        $('#tbStatPerso tbody').html(html);
+                    } else {
+                        console.error('Erreur SQL :', response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erreur AJAX :', error);
+                }
+            });
+
+        }
+    </script>
 
 
 

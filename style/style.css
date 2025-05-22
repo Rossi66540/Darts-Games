@@ -167,8 +167,22 @@ form,
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
+#divScoreActuel{
+    display:flex;
+    align-content: center;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+#divScoreActuel label{
+    color:black;
+    margin:5px;
+}
+
 #entete p,
-#entete label {
+#entete label, 
+#divScoreActuel label
+ {
     color:black;
 }
 
@@ -350,7 +364,7 @@ label.saisie {
 }
 
 #divScore {
-    margin-top: 30px;
+    /* margin-top: 30px; */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
