@@ -70,6 +70,11 @@
                 </button>
             </li>
             <li>
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage('kapital2.html')">
+                    Test Dev
+                </button>
+            </li>
+            <li>
                 <button class="buttonGeneral" style="min-width: 180px;background-color:lightgreen" onclick="window.location.href='stats.php';">
                     Statistiques
                 </button>
@@ -99,6 +104,15 @@
             deleteCookie("session");
             window.location.href = "index.html";
         }
+
+        function loadPage(url) {
+  fetch(url)
+    .then(response => response.text())
+    .then(html => {
+      document.body.innerHTML = html;
+      history.pushState({}, '', url);
+    });
+}
     </script>
 </body>
 

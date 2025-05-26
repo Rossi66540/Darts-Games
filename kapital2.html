@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+     <link rel="apple-touch-icon" href="favicon.ico">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
+    <link rel="stylesheet" href="./styleGenerique.css" />
+
+
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
+    <title>Kapital 2</title>
+    <style>
+        html,
+        body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid #000;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="./libs/jquery3.7.js"></script>
+
+    <div id="modalRegles" class="modal" style="display:none;">
+
+    </div>
+
+    <div id="divTitre">
+        <h1> Titre 1 </h1>
+        <button class="buttonMini" onclick="afficherRegles()"> R </button>
+    </div>
+
+    <div id="entete">
+        <label>Nombre Joueurs :</label>
+        <input id="nbJrs" style="width:60px;" type="text" onchange="genererTableauNom()" />
+
+        <table id="tableJoueurs">
+            <tbody></tbody>
+        </table>
+        <button onclick="lancerPartie()"> LANCER PARTIE </button>
+    </div>
+
+    <div id="contenu" class="" style="display:none;">
+        <div id="divTableScore">
+            <table id="tableScore">
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td class="objectif">1</td>
+                        <td id="score_1_0"><label style="color:#2ecc71" class="resultat">6</label></td>
+                        <td id="score_1_1"><label style="color:#2ecc71" class="resultat">6</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">2</td>
+                        <td id="score_2_0"><label style="color:#2ecc71" class="resultat">6</label></td>
+                        <td id="score_2_1"><label style="color:#2ecc71" class="resultat">6</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">3</td>
+                        <td id="score_3_0"><label style="color:#2ecc71" class="resultat">6</label></td>
+                        <td id="score_3_1"><label style="color:#2ecc71" class="resultat">6</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">4</td>
+                        <td id="score_4_0"><label style="color:#2ecc71" class="resultat">6</label></td>
+                        <td id="score_4_1"><label style="color:#2ecc71" class="resultat">6</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">5</td>
+                        <td id="score_5_0"><label style="color:#2ecc71" class="resultat">6</label></td>
+                        <td id="score_5_1"><label style="color:#2ecc71" class="resultat">2</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">6</td>
+                        <td id="score_6_0"><label style="color:#2ecc71" class="resultat">1</label></td>
+                        <td id="score_6_1"><label style="color:#2ecc71" class="resultat">1</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">7</td>
+                        <td id="score_7_0"><label style="color:#2ecc71" class="resultat">1</label></td>
+                        <td id="score_7_1"><label style="color:#2ecc71" class="resultat">1</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">8</td>
+                        <td id="score_8_0"><label style="color:#2ecc71" class="resultat">3</label></td>
+                        <td id="score_8_1"><label style="color:#2ecc71" class="resultat">3</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">9</td>
+                        <td id="score_9_0"><label style="color:#2ecc71" class="resultat">3</label></td>
+                        <td id="score_9_1"><label style="color:#2ecc71" class="resultat">2</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">10</td>
+                        <td id="score_10_0"><label style="color:#2ecc71" class="resultat">9</label></td>
+                        <td id="score_10_1"><label style="color:#2ecc71" class="resultat">9</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">11</td>
+                        <td id="score_11_0"><label style="color:#2ecc71" class="resultat">9</label></td>
+                        <td id="score_11_1"><label style="color:#2ecc71" class="resultat">8</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">12</td>
+                        <td id="score_12_0"><label style="color:#2ecc71" class="resultat">8</label></td>
+                        <td id="score_12_1"><label style="color:#2ecc71" class="resultat">8</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">13</td>
+                        <td id="score_13_0"><label style="color:#2ecc71" class="resultat">5</label></td>
+                        <td id="score_13_1"><label style="color:#2ecc71" class="resultat">5</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">14</td>
+                        <td id="score_14_0"><label style="color:#2ecc71" class="resultat">1</label></td>
+                        <td id="score_14_1"><label style="color:#2ecc71" class="resultat">4</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">15</td>
+                        <td id="score_15_0"><label style="color:red" class="resultat">0</label></td>
+                        <td id="score_15_1"><label style="color:red" class="resultat">0</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">16</td>
+                        <td id="score_16_0"><label style="color:red" class="resultat">0</label></td>
+                        <td id="score_16_1"><label style="color:red" class="resultat">0</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">17</td>
+                        <td id="score_17_0"><label style="color:#2ecc71" class="resultat">1</label></td>
+                        <td id="score_17_1"><label style="color:#2ecc71" class="resultat">1</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">18</td>
+                        <td id="score_18_0"><label style="color:#2ecc71" class="resultat">3</label></td>
+                        <td id="score_18_1"><label style="color:#2ecc71" class="resultat">3</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">19</td>
+                        <td id="score_19_0"><label style="color:#2ecc71" class="resultat">3</label></td>
+                        <td id="score_19_1"><label style="color:#2ecc71" class="resultat">3</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">20</td>
+                        <td id="score_20_0"><label style="color:#2ecc71" class="resultat">3</label></td>
+                        <td id="score_20_1"><label style="color:#2ecc71" class="resultat">2</label></td>
+                    </tr>
+                    <tr>
+                        <td class="objectif">Bulle</td>
+                        <td id="score_21_0"><label style="color:#2ecc71" class="resultat">4</label></td>
+                        <td id="score_21_1"><label style="color:#2ecc71" class="resultat">4</label></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="divScoreActuel">
+            <label id="lb_1"> - </label>
+            <label id="lb_2"> - </label>
+            <label id="lb_3"> - </label>
+
+        </div>
+
+        <div id="divScore" style="flex-direction:column;">
+            <div id="scorePossible">
+                <div class="scoreLigne">
+
+                    <button class="buttonScore" onclick="saisieScore(1)">1</button>
+                    <button class="buttonScore" onclick="saisieScore(2)">2</button>
+                    <button class="buttonScore" onclick="saisieScore(3)">3</button>
+                    <button class="buttonScore" onclick="saisieScore(4)">4</button>
+                    <button class="buttonScore" onclick="saisieScore(5)">5</button>
+                    <button class="buttonScore" onclick="saisieScore(6)">6</button>
+                    <button class="buttonScore" onclick="saisieScore(7)">7</button>
+                </div>
+                <div class="scoreLigne">
+
+                    <button class="buttonScore" onclick="saisieScore(8)">8</button>
+                    <button class="buttonScore" onclick="saisieScore(9)">9</button>
+                    <button class="buttonScore" onclick="saisieScore(10)">10</button>
+                    <button class="buttonScore" onclick="saisieScore(11)">11</button>
+                    <button class="buttonScore" onclick="saisieScore(12)">12</button>
+                    <button class="buttonScore" onclick="saisieScore(13)">13</button>
+                    <button class="buttonScore" onclick="saisieScore(14)">14</button>
+                </div>
+                <div class="scoreLigne">
+                    <button class="buttonScore" onclick="saisieScore(15)">15</button>
+                    <button class="buttonScore" onclick="saisieScore(16)">16</button>
+                    <button class="buttonScore" onclick="saisieScore(17)">17</button>
+                    <button class="buttonScore" onclick="saisieScore(18)">18</button>
+                    <button class="buttonScore" onclick="saisieScore(19)">19</button>
+                    <button class="buttonScore" onclick="saisieScore(20)">20</button>
+                    <button class="buttonScore" onclick="saisieScore(25)">B</button>
+                </div>
+                <div class="scoreLigne">
+                    <button class="buttonScore" onclick="saisieScore(0)">0</button>
+                    <button class="buttonMode" onclick="setMode(2,this)">Double</button>
+                    <button class="buttonMode" onclick="setMode(3,this)">Triple</button>
+                    <button class="buttonCancel" onclick="annulerScore()" style="background-color:red;">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="divFin" class="hide" style="display:none;">
+        <button onclick="window.location.href='index.html'"> Faire un autre Jeu </button>
+        <button onclick="location.reload()"> Rejouer à l'horloge comptée </button>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        var nomUser = getCookie("session");
+        var scorePossible = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, "B"];
+        var objectif = [20, "Cote", 19, "Suite", 18, "Couleur", 17, "Double", 16, "Triple", 15, 57, 14, "B"];
+
+        var joueurs = [];
+        var resultats = [];
+        var totaux = [];
+        var flechettes = [];
+
+
+        var modeActuel = 1;
+
+        var indiceJoueurActuel = 0;
+        var objectifActuel = -1; //CORRECT
+        //var objectifActuel = 0;
+        var indiceFlechette = 1;
+
+        var scoreEncours = 0;
+
+        function genererTableauNom() {
+            let nbrJrs = $('#nbJrs').val();
+            $('#tableJoueurs').empty();
+
+            $.ajax({
+                url: '/models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    for (let i = 1; i <= nbrJrs; i++) {
+                        let select = '<select class="pseudo" id="in_pseudo_' + i + '" style="width:160px;">';
+                        select += '<option value=""> - - - </option>';
+                        data.forEach(function (user) {
+                            let selected = "";
+                            if (i == 1) {
+                                if (user.pseudo == nomUser) {
+                                    selected = "selected";
+                                }
+                            }
+                            select += '<option value="' + user.pseudo + '" data-id="' + user.id + '" ' + selected + '>' + user.pseudo + '</option>';
+                        });
+                        select += '</select>';
+
+                        let html = '<tr><td>Joueur ' + i + '</td><td>' + select + '</td></tr>';
+                        $('#tableJoueurs').append(html);
+                    }
+
+                    $('#in_pseudo_1').focus();
+                },
+                error: function () {
+                    alert("Erreur lors du chargement des joueurs.");
+                }
+            });
+
+            /*for (i = 1; i <= nbrJrs; i++) {
+                let html = '<tr><td>Joueur ' + i + '</td><td><input class="pseudo" style="width:150px;" id="in_pseudo_' + i + '"/></td></tr>';
+                $('#tableJoueurs').append(html);
+            }*/
+            $('#in_pseudo_1').focus();
+        }
+
+        function lancerPartie() {
+            //cache entete
+            $('#entete').hide();
+            //affichage contenu
+            $('#contenu').show();
+
+            //tirage au sort des joueurs
+            // Vide le tableau des joueurs
+            joueurs = [];
+
+            // Récupère tous les pseudos
+            $('.pseudo').each(function () {
+                let selectedOption = $(this).find('option:selected');
+                let id_user = selectedOption.data('id');
+                if (id_user !== undefined) {
+                    joueurs.push(id_user);  // on stocke l'id_user et pas le pseudo
+                }
+            });
+
+            // Mélange aléatoirement les joueurs (algorithme de Fisher-Yates)
+            for (let i = joueurs.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [joueurs[i], joueurs[j]] = [joueurs[j], joueurs[i]];
+            }
+
+            let enteteHtml = "<tr><td></td>";
+            let bodyHtmlDebut = "<tr><td></td>";
+            let totauxHtml = "<tr><td>Total</td>";
+
+            let mappingIdPseudo = {};
+            $('.pseudo').each(function () {
+                let pseudo = $(this).find('option:selected').text();
+                let id = $(this).find('option:selected').data('id');
+                if (id !== undefined) {
+                    mappingIdPseudo[id] = pseudo;
+                }
+            });
+
+            joueurs.forEach(function (id_user, index) {
+                let pseudo = mappingIdPseudo[id_user] || ("Joueur " + (index + 1));
+                enteteHtml += "<td>" + pseudo + "</td>";
+            });
+
+            /*joueurs.forEach(function (joueur, index) {
+                enteteHtml += "<td>" + joueur + "</td>";
+            });*/
+            enteteHtml += "</tr>";
+
+            //$('#tableScore thead').append(enteteHtml);
+
+            $('#score_0_1').append()
+            ajouteLigne();
+            //setScorePossible();
+        }
+
+        function ajouteLigne() {
+            if (objectifActuel == 13) {
+                savePartie();
+                alert('FIN DE LA PARTIE !');
+                //cacheDivSaisiePossible();
+                $('#divScore').hide();
+                $('#divFin').show();
+            } else {
+                objectifActuel++;
+                let scoreStr = objectif[objectifActuel];
+
+                $('#lb_1').html(" - ");
+                $('#lb_2').html(" - ");
+                $('#lb_3').html(" - ");
+
+                let htmlLigne = "<tr><td class='objectif'>" + scoreStr + "</td>";
+                joueurs.forEach(function (joueur, index) {
+                    htmlLigne += "<td id='score_" + objectifActuel + "_" + (index) + "'></td>";
+                });
+
+                htmlLigne += "</tr>";
+                $('#tableScore tbody').append(htmlLigne);
+                if (objectifActuel == 13) {
+                    $('#btMode_3').hide();
+                }
+            }
+        }
+        function savePartie() {
+            // Trouver le gagnant (celui avec le score max)
+            let maxScore = 0;
+            let indiceGagnant = -1;
+
+            joueurs.forEach(function (joueur, index) {
+                let score = resultats[index][13];
+                if (score > maxScore) {
+                    maxScore = score;
+                    indiceGagnant = index;
+                }
+            });
+            resultats[indiceJoueurActuel]
+
+            let idGagnant = joueurs[indiceGagnant];
+
+            // Construire un tableau des détails des scores
+            let detailScores = joueurs.map((joueur, idx) => ({
+                id_user: joueur,
+                total: resultats[idx][13],
+                place: "1",
+                details: resultats[idx] || []
+            }));
+
+            // Préparer les données à envoyer
+            let dataToSend = {
+                type: 2,
+                nbr_joueur: joueurs.length,
+                id_gagnant: idGagnant,
+                scores: totaux,
+                resultats: detailScores
+            };
+
+            fetch('/save_partie.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Erreur réseau");
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Partie sauvegardée avec succès:', data);
+                    // ici tu peux ajouter ce que tu veux faire après la sauvegarde (ex : afficher un message, rediriger...)
+                });
+        }
+
+
+        function setMode(value,btn) {
+            let isActif = false;
+            
+            if ($(btn).hasClass('active')) {
+                isActif = true;
+                modeActuel = 1;
+            }else{
+                modeActuel = value;
+            }
+            
+            // Désélectionner tous les boutons d'action
+            $('.buttonMode').removeClass('active');
+            if (!isActif) {
+                $(btn).addClass('active');
+            }
+            
+        }
+
+        function setScorePossible() {
+            $('#scorePossible').show();
+            let html = "";
+            scorePossible.forEach(function (sc) {
+                let val = sc;
+                if (sc == "B") {
+                    val = 25;
+                }
+                html += "<button class='buttonScore' onclick='saisieScore(" + val + ")'>" + sc + "</button>";
+            });
+            $('#scorePossible').append(html);
+        }
+
+
+        function isCouleurDifférente(flechette) {
+            let rouges = [[2, 20], [3, 20], [2, 18], [3, 18], [2, 13], [3, 13], [2, 10], [3, 10], [2, 2], [3, 2], [2, 3], [3, 3], [2, 7], [3, 7], [2, 8], [3, 8], [2, 14], [3, 14], [2, 12], [3, 12], [2, 25]];
+            let verts = [[2, 1], [3, 1], [2, 4], [3, 4], [2, 6], [3, 6], [2, 15], [3, 15], [2, 17], [3, 17], [2, 19], [3, 19], [2, 16], [3, 16], [2, 11], [3, 11], [2, 9], [3, 9], [2, 5], [3, 5], [1, 25]];
+            let noirs = [[1, 20], [1, 18], [1, 13], [1, 10], [1, 2], [1, 3], [1, 7], [1, 8], [1, 14], [1, 12]];
+            let blancs = [[1, 1], [1, 4], [1, 6], [1, 15], [1, 17], [1, 19], [1, 16], [1, 11], [1, 9], [1, 5]];
+
+            // Fonction pour vérifier la couleur d'une flechette
+            function getCouleur(flechette) {
+                if (rouges.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'rouge';
+                if (verts.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'vert';
+                if (noirs.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'noir';
+                if (blancs.some(c => c[0] === flechette[0] && c[1] === flechette[1])) return 'blanc';
+                return null; // Si la flechette n'appartient à aucune couleur valide
+            }
+
+            // Vérifie les couleurs des trois flechettes
+            const couleurFlechette1 = getCouleur(flechette[1]);
+            const couleurFlechette2 = getCouleur(flechette[2]);
+            const couleurFlechette3 = getCouleur(flechette[3]);
+
+            // Vérifie que les trois couleurs sont différentes
+            const couleurs = [couleurFlechette1, couleurFlechette2, couleurFlechette3];
+            const uniqueCouleurs = new Set(couleurs);
+
+            // Si le nombre de couleurs uniques est 3, cela signifie que chaque flechette a une couleur différente
+            return uniqueCouleurs.size === 3;
+        }
+
+        function isCoteACote(flechette) {
+            const cibleZone = [19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3];
+
+            const f1 = flechette[1][1];
+            const f2 = flechette[2][1];
+            const f3 = flechette[3][1];
+
+            const unique = new Set([f1, f2, f3]);
+            if (unique.size !== 3) {
+                return false;
+            }
+
+            // Recherche les fléchettes dans des séquences consécutives
+            for (let j = 0; j < cibleZone.length; j++) {
+
+                const sequence = [
+                    cibleZone[j],
+                    cibleZone[(j + 1) % cibleZone.length],
+                    cibleZone[(j + 2) % cibleZone.length]
+                ];
+
+                // Si les trois valeurs (peu importe l'ordre) sont dans la séquence
+                if (sequence.includes(f1) && sequence.includes(f2) && sequence.includes(f3)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function isSuite(flechettes) {
+            let tabTemp = [];
+            flechettes.forEach(flechette => {
+                tabTemp.push(flechette[1]);
+            });
+
+            let tabFlechettesTrier = tabTemp.sort((a, b) => a - b);
+
+            // Vérifie que c'est une suite (au moins 2 éléments)
+            for (let i = 1; i < tabFlechettesTrier.length; i++) {
+                if (tabFlechettesTrier[i] !== tabFlechettesTrier[i - 1] + 1) {
+                    return false;
+                }
+            }
+            return tabFlechettesTrier.length > 1;
+        }
+
+        function saisieScore(valeur) {
+            if (resultats[indiceJoueurActuel] == undefined) {
+                resultats[indiceJoueurActuel] = [];
+            }
+            if (resultats[indiceJoueurActuel][objectifActuel] == undefined) {
+                resultats[indiceJoueurActuel][objectifActuel] = 0;
+            }
+
+            if (flechettes[indiceJoueurActuel] == undefined) {
+                flechettes[indiceJoueurActuel] = [];
+            }
+            if (flechettes[indiceJoueurActuel][objectifActuel] == undefined) {
+                flechettes[indiceJoueurActuel][objectifActuel] = [];
+            }
+            if (flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] == undefined) {
+                flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [1, 0];
+            }
+            flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+
+            let text = "";
+            if (modeActuel == 2) {
+                text += 'D ';
+            }
+
+            if (modeActuel == 3) {
+                text += 'T ';
+            }
+            text += valeur;
+
+            $('#lb_' + indiceFlechette).html(text);
+
+            if (indiceFlechette == 1) {
+                scoreEncours = 0;
+            }
+
+            switch (objectifActuel) {
+                case 0:
+                    if (valeur == 20) {
+                        scoreEncours += (modeActuel) * 20;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, 20];
+                    }
+                    break;
+
+                case 1:
+                    if (indiceFlechette == 3) {
+                        if (isCoteACote(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+
+                case 2:
+                    if (valeur == 19) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 3:
+                    if (indiceFlechette == 3) {
+                        if (isSuite(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+
+                case 4:
+                    if (valeur == 18) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 5:
+                    if (indiceFlechette == 3) {
+                        if (isCouleurDifférente(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+
+                case 6:
+                    if (valeur == 17) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 7: {
+                    if (modeActuel == 2) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+                }
+                case 8:
+                    if (valeur == 16) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 9:
+                    if (modeActuel == 3) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 10:
+                    if (valeur == 15) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 11:
+                    scoreEncours += (modeActuel) * valeur;
+                    flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    if (indiceFlechette == 3 && scoreEncours != 57) {
+                        scoreEncours = 0;
+                    }
+
+                case 12:
+                    if (valeur == 14) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 13:
+                    if (valeur == 25) {
+                        //attention test simple ou double pas de triple
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+            }
+
+            if (indiceFlechette == 3) {
+                if (scoreEncours == 0) {
+                    if (objectifActuel == 0) {
+                        resultats[indiceJoueurActuel][objectifActuel] = 0;
+                    } else {
+                        resultats[indiceJoueurActuel][objectifActuel] = Math.ceil(resultats[indiceJoueurActuel][objectifActuel - 1] / 2);
+                    }
+                } else {
+                    if (objectifActuel == 0) {
+                        resultats[indiceJoueurActuel][objectifActuel] = scoreEncours;
+                    } else {
+                        resultats[indiceJoueurActuel][objectifActuel] = resultats[indiceJoueurActuel][objectifActuel - 1] + scoreEncours;
+                    }
+                }
+                setCaseSuivante();
+            } else {
+                indiceFlechette++;
+            }
+
+            setMode(1); //retour au simple automatique
+        }
+
+        function setCaseSuivante() {
+            indiceFlechette = 1;
+            //enleve la case actuelle
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
+            let color = "#2ecc71";
+            if (resultats[indiceJoueurActuel][objectifActuel] < resultats[indiceJoueurActuel][objectifActuel - 1]) {
+                color = "red";
+            }
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append("<label style='color:" + color + "'  class='resultat'>" + resultats[indiceJoueurActuel][objectifActuel] + "</label>");
+
+            if (indiceJoueurActuel == (joueurs.length - 1)) {
+                ajouteLigne();
+                indiceJoueurActuel = 0;
+            } else {
+                indiceJoueurActuel++;
+                $('#lb_1').html(" - ");
+                $('#lb_2').html(" - ");
+                $('#lb_3').html(" - ");
+            }
+
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append('<label class="saisie"></label>');
+        }
+
+        function annulerScore() {
+            // Si on est au tout début, rien à annuler
+            if (indiceJoueurActuel === 0 && objectifActuel === 0 && indiceFlechette === 1) {
+                alert("Rien à annuler !");
+                return;
+            }
+
+            // On recule d'une fléchette
+            if (indiceFlechette === 1) {
+                // On doit reculer au joueur précédent ou à l'objectif précédent
+                if (indiceJoueurActuel === 0) {
+                    // On recule à l'objectif précédent
+                    $('#tableScore tbody tr:last').remove();
+                    if (objectifActuel === 0) {
+                        // On est au début, rien à annuler
+                        alert("Rien à annuler !");
+                        return;
+                    }
+                    objectifActuel--;
+                    // Le dernier joueur est le dernier de la liste
+                    indiceJoueurActuel = joueurs.length - 1;
+                } else {
+                    // On recule au joueur précédent du même objectif
+                    indiceJoueurActuel--;
+                }
+                // On revient à la dernière fléchette (3)
+                indiceFlechette = 3;
+            } else {
+                // Sinon on recule simplement la fléchette
+                indiceFlechette--;
+            }
+
+            // Supprimer la dernière saisie dans flechettes
+            if (
+                flechettes[indiceJoueurActuel] &&
+                flechettes[indiceJoueurActuel][objectifActuel] &&
+                flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette]
+            ) {
+                delete flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette];
+            }
+
+            // Mettre à jour l'affichage des labels de fléchette (lb_1, lb_2, lb_3)
+            for (let i = 1; i <= 3; i++) {
+                if (
+                    flechettes[indiceJoueurActuel] &&
+                    flechettes[indiceJoueurActuel][objectifActuel] &&
+                    flechettes[indiceJoueurActuel][objectifActuel][i]
+                ) {
+                    let [mode, val] = flechettes[indiceJoueurActuel][objectifActuel][i];
+                    let text = "";
+                    if (mode === 2) text += "D ";
+                    else if (mode === 3) text += "T ";
+                    text += val;
+                    $('#lb_' + i).html(text);
+                } else {
+                    $('#lb_' + i).html(" - ");
+                }
+            }
+
+            // Recalculer scoreEncours à partir de flechettes restantes sur cette case
+            scoreEncours = 0;
+            if (flechettes[indiceJoueurActuel] && flechettes[indiceJoueurActuel][objectifActuel]) {
+                for (let i = 1; i <= 3; i++) {
+                    if (flechettes[indiceJoueurActuel][objectifActuel][i]) {
+                        let [mode, val] = flechettes[indiceJoueurActuel][objectifActuel][i];
+                        scoreEncours += mode * val;
+                    }
+                }
+            }
+
+            // Mettre à jour le tableau des résultats (resultats)
+            if (indiceFlechette !== 3) {
+                // Si on est en train de saisir fléchettes (pas encore finie), on ne met pas à jour le résultat final
+                // (optionnel selon ta logique)
+            } else {
+                // Si on vient d'annuler après avoir fini une case, on doit recalculer le score à la case actuelle
+
+                if (objectifActuel === 0) {
+                    // Premier objectif
+                    resultats[indiceJoueurActuel][objectifActuel] = scoreEncours;
+                } else {
+                    // Sinon résultat = résultat objectif précédent + scoreEncours
+                    if (resultats[indiceJoueurActuel][objectifActuel - 1] === undefined) {
+                        resultats[indiceJoueurActuel][objectifActuel - 1] = 0;
+                    }
+                    resultats[indiceJoueurActuel][objectifActuel] = resultats[indiceJoueurActuel][objectifActuel - 1] + scoreEncours;
+                }
+            }
+
+            // Mise à jour visuelle de la case score dans le tableau
+            $('#score_' + objectifActuel + "_" + indiceJoueurActuel).empty();
+
+            if (resultats[indiceJoueurActuel] && resultats[indiceJoueurActuel][objectifActuel] !== undefined) {
+                let color = "#2ecc71";
+                if (
+                    objectifActuel > 0 &&
+                    resultats[indiceJoueurActuel][objectifActuel] < resultats[indiceJoueurActuel][objectifActuel - 1]
+                ) {
+                    color = "red";
+                }
+                $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append(
+                    "<label style='color:" + color + "'  class='resultat'>" + resultats[indiceJoueurActuel][objectifActuel] + "</label>"
+                );
+            }
+
+            // Mise à jour des labels de score (lb_1, lb_2, lb_3) déjà faite un peu plus haut
+
+            // Remettre le mode sur Simple par défaut (1)
+            setMode(1);
+        }
+
+
+
+        function afficherRegles() {
+            $('#modalRegles').show();
+        }
+
+        function cacherRegles() {
+            $('#modalRegles').hide();
+        }
+
+
+        // Fermer la modal si clic à l'extérieur
+        $(window).on('click', function (event) {
+            if (event.target.id === 'modalRegles') {
+                cacherRegles();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
