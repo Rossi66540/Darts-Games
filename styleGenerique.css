@@ -124,19 +124,44 @@ form,
 }
 
 #entete {
-    display: flex;
-    flex: 11;
-    flex-direction: column;
+    /* display: flex; */
+    /* flex: 11; */
+    /* flex-direction: column; */
+    margin: 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  height: auto;
+  height: auto;
 }
+
+
 
 h1 {
     /* font-size: 1.4rem; */
 }
 
+.lbActuel{
+    font-size: 1.5rem;
+    color: white;   
+}
+
+.lbSelected{
+    padding-right: 5px;
+    padding-left: 5px;
+    margin: 1px;
+    border:solid 1px white;
+}
+
 .scoreLigne {
     display: flex;
     width: 100%;
-    gap: 5px;
+    gap: 4px;
     padding: 1px;
 }
 
@@ -213,8 +238,7 @@ label.total {
     font-size: 1.2rem;
 }
 
-input.pseudo,
-input#nbJrs {
+input.pseudo {
     width: 100% !important;
 }
 

@@ -53,143 +53,37 @@
     <script src="./libs/jquery3.7.js"></script>
 
     <div id="modalRegles" class="modal" style="display:none;">
-
     </div>
 
     <div id="divTitre">
-        <h1> Titre 1 </h1>
+        <h1 style="margin:0;"> Titre 1 </h1>
         <button class="buttonMini" onclick="afficherRegles()"> R </button>
     </div>
 
-    <div id="entete">
-        <label>Nombre Joueurs :</label>
-        <input id="nbJrs" style="width:60px;" type="text" onchange="genererTableauNom()" />
-
-        <table id="tableJoueurs">
-            <tbody></tbody>
-        </table>
-        <button onclick="lancerPartie()"> LANCER PARTIE </button>
+    <div id="entete">        
+            <label>Nombre Joueurs :</label>
+            <input id="nbJrs" style="width:60px;" type="number" onkeyup="genererTableauNom()" />
+            
+            <table id="tableJoueurs">
+                <tbody></tbody>
+            </table>
+            <button onclick="lancerPartie()"> LANCER PARTIE </button>
     </div>
+    <div id="piedEntete" style="display: flex;  height: 60%;"></div>
 
     <div id="contenu" class="" style="display:none;">
         <div id="divTableScore">
             <table id="tableScore">
                 <thead></thead>
-                <tbody>
-                    <tr>
-                        <td class="objectif">1</td>
-                        <td id="score_1_0"><label style="color:#2ecc71" class="resultat">6</label></td>
-                        <td id="score_1_1"><label style="color:#2ecc71" class="resultat">6</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">2</td>
-                        <td id="score_2_0"><label style="color:#2ecc71" class="resultat">6</label></td>
-                        <td id="score_2_1"><label style="color:#2ecc71" class="resultat">6</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">3</td>
-                        <td id="score_3_0"><label style="color:#2ecc71" class="resultat">6</label></td>
-                        <td id="score_3_1"><label style="color:#2ecc71" class="resultat">6</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">4</td>
-                        <td id="score_4_0"><label style="color:#2ecc71" class="resultat">6</label></td>
-                        <td id="score_4_1"><label style="color:#2ecc71" class="resultat">6</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">5</td>
-                        <td id="score_5_0"><label style="color:#2ecc71" class="resultat">6</label></td>
-                        <td id="score_5_1"><label style="color:#2ecc71" class="resultat">2</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">6</td>
-                        <td id="score_6_0"><label style="color:#2ecc71" class="resultat">1</label></td>
-                        <td id="score_6_1"><label style="color:#2ecc71" class="resultat">1</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">7</td>
-                        <td id="score_7_0"><label style="color:#2ecc71" class="resultat">1</label></td>
-                        <td id="score_7_1"><label style="color:#2ecc71" class="resultat">1</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">8</td>
-                        <td id="score_8_0"><label style="color:#2ecc71" class="resultat">3</label></td>
-                        <td id="score_8_1"><label style="color:#2ecc71" class="resultat">3</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">9</td>
-                        <td id="score_9_0"><label style="color:#2ecc71" class="resultat">3</label></td>
-                        <td id="score_9_1"><label style="color:#2ecc71" class="resultat">2</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">10</td>
-                        <td id="score_10_0"><label style="color:#2ecc71" class="resultat">9</label></td>
-                        <td id="score_10_1"><label style="color:#2ecc71" class="resultat">9</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">11</td>
-                        <td id="score_11_0"><label style="color:#2ecc71" class="resultat">9</label></td>
-                        <td id="score_11_1"><label style="color:#2ecc71" class="resultat">8</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">12</td>
-                        <td id="score_12_0"><label style="color:#2ecc71" class="resultat">8</label></td>
-                        <td id="score_12_1"><label style="color:#2ecc71" class="resultat">8</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">13</td>
-                        <td id="score_13_0"><label style="color:#2ecc71" class="resultat">5</label></td>
-                        <td id="score_13_1"><label style="color:#2ecc71" class="resultat">5</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">14</td>
-                        <td id="score_14_0"><label style="color:#2ecc71" class="resultat">1</label></td>
-                        <td id="score_14_1"><label style="color:#2ecc71" class="resultat">4</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">15</td>
-                        <td id="score_15_0"><label style="color:red" class="resultat">0</label></td>
-                        <td id="score_15_1"><label style="color:red" class="resultat">0</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">16</td>
-                        <td id="score_16_0"><label style="color:red" class="resultat">0</label></td>
-                        <td id="score_16_1"><label style="color:red" class="resultat">0</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">17</td>
-                        <td id="score_17_0"><label style="color:#2ecc71" class="resultat">1</label></td>
-                        <td id="score_17_1"><label style="color:#2ecc71" class="resultat">1</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">18</td>
-                        <td id="score_18_0"><label style="color:#2ecc71" class="resultat">3</label></td>
-                        <td id="score_18_1"><label style="color:#2ecc71" class="resultat">3</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">19</td>
-                        <td id="score_19_0"><label style="color:#2ecc71" class="resultat">3</label></td>
-                        <td id="score_19_1"><label style="color:#2ecc71" class="resultat">3</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">20</td>
-                        <td id="score_20_0"><label style="color:#2ecc71" class="resultat">3</label></td>
-                        <td id="score_20_1"><label style="color:#2ecc71" class="resultat">2</label></td>
-                    </tr>
-                    <tr>
-                        <td class="objectif">Bulle</td>
-                        <td id="score_21_0"><label style="color:#2ecc71" class="resultat">4</label></td>
-                        <td id="score_21_1"><label style="color:#2ecc71" class="resultat">4</label></td>
-                    </tr>
+                <tbody>                    
                 </tbody>
             </table>
         </div>
 
         <div id="divScoreActuel">
-            <label id="lb_1"> - </label>
-            <label id="lb_2"> - </label>
-            <label id="lb_3"> - </label>
-
+            <label id="lb_1" class="lbActuel lbSelected"> - </label>
+            <label id="lb_2" class="lbActuel"> - </label>
+            <label id="lb_3" class="lbActuel"> - </label>
         </div>
 
         <div id="divScore" style="flex-direction:column;">
@@ -234,7 +128,6 @@
             </div>
         </div>
     </div>
-
 
 
     <div id="divFin" class="hide" style="display:none;">
@@ -312,6 +205,8 @@
         function lancerPartie() {
             //cache entete
             $('#entete').hide();
+            $('#piedEntete').hide();
+
             //affichage contenu
             $('#contenu').show();
 
@@ -357,7 +252,7 @@
             });*/
             enteteHtml += "</tr>";
 
-            //$('#tableScore thead').append(enteteHtml);
+            $('#tableScore thead').append(enteteHtml);
 
             $('#score_0_1').append()
             ajouteLigne();
@@ -375,6 +270,8 @@
                 objectifActuel++;
                 let scoreStr = objectif[objectifActuel];
 
+                $('.lbActuel').removeClass('lbSelected');
+                $('#lb_1').addClass('lbSelected');
                 $('#lb_1').html(" - ");
                 $('#lb_2').html(" - ");
                 $('#lb_3').html(" - ");
@@ -575,7 +472,7 @@
             }
             text += valeur;
 
-            $('#lb_' + indiceFlechette).html(text);
+            $('#lb_' + indiceFlechette).html(text);           
 
             if (indiceFlechette == 1) {
                 scoreEncours = 0;
@@ -719,7 +616,9 @@
                 }
                 setCaseSuivante();
             } else {
-                indiceFlechette++;
+                indiceFlechette++;                
+                $('.lbActuel').removeClass('lbSelected');
+                $('#lb_'+indiceFlechette).addClass('lbSelected');
             }
 
             setMode(1); //retour au simple automatique
@@ -735,11 +634,17 @@
             }
             $('#score_' + objectifActuel + "_" + indiceJoueurActuel).append("<label style='color:" + color + "'  class='resultat'>" + resultats[indiceJoueurActuel][objectifActuel] + "</label>");
 
+            console.log("Flechette :"+indiceFlechette);
+
             if (indiceJoueurActuel == (joueurs.length - 1)) {
                 ajouteLigne();
                 indiceJoueurActuel = 0;
             } else {
                 indiceJoueurActuel++;
+                
+                $('.lbActuel').removeClass('lbSelected');
+                $('#lb_1').addClass('lbSelected');
+                
                 $('#lb_1').html(" - ");
                 $('#lb_2').html(" - ");
                 $('#lb_3').html(" - ");
@@ -757,7 +662,7 @@
             }
 
             // On recule d'une fléchette
-            if (indiceFlechette === 1) {
+            if (indiceFlechette == 1) {
                 // On doit reculer au joueur précédent ou à l'objectif précédent
                 if (indiceJoueurActuel === 0) {
                     // On recule à l'objectif précédent
@@ -780,7 +685,7 @@
                 // Sinon on recule simplement la fléchette
                 indiceFlechette--;
             }
-
+            
             // Supprimer la dernière saisie dans flechettes
             if (
                 flechettes[indiceJoueurActuel] &&
@@ -806,7 +711,11 @@
                 } else {
                     $('#lb_' + i).html(" - ");
                 }
+                //$('.lbActuel').removeClass('lbSelected');
+                //$('#lb_'+(i+1)).addClass('lbSelected');
             }
+            $('.lbActuel').removeClass('lbSelected');
+            $('#lb_'+indiceFlechette).addClass('lbSelected');
 
             // Recalculer scoreEncours à partir de flechettes restantes sur cette case
             scoreEncours = 0;
