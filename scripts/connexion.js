@@ -1,6 +1,9 @@
 // Gestion du formulaire de connexion
-$(document).on('submit', '#loginForm', function (e) {
-    e.preventDefault(); // Empêche le rechargement de la page
+
+$(document).ready(function() {
+  $(document).on('submit', '#loginForm', function(e) {
+    e.preventDefault();
+
 
     const formData = {
         email: $('input[name="email"]').val(),
@@ -8,21 +11,22 @@ $(document).on('submit', '#loginForm', function (e) {
     };
 
     $.ajax({
-        url: 'login_traitement.php',
+        url: './login_traitement.php',
         method: 'POST',
         data: formData,
         dataType: 'json',
         success: function (response) {
             if (response.success) {
-                $('#loginMessage').css('color', 'green').text('Connexion réussie !');
-                // Tu peux rediriger ou charger un autre contenu
-                chargerContenu('profil'); // ou dashboard, etc.
+                console.log("connexion OKKKK");
+                //$('#loginMessage').css('color', 'green').text('Bienvenue ' + response.pseudo + ' !');
+                chargerContenu('dashboard','Darts Board'); 
             } else {
-                $('#loginMessage').css('color', 'red').text(response.message);
+                $('#loginMessage').css('color', 'red').text(response.error);
             }
         },
         error: function () {
-            $('#loginMessage').css('color', 'red').text('Erreur serveur.');
+            $('#loginMessage').css('color', 'red').text("Erreur serveur.");
         }
     });
 });
+  });

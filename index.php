@@ -1,3 +1,10 @@
+<?php
+session_start(); // Obligatoire AVANT toute sortie HTML
+
+$pseudo = $_SESSION['pseudo'] ?? null;
+$isConnected = !empty($pseudo);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -27,23 +34,20 @@
     ?>
 
     <div id="divTitre">
-        <h1>Bienvenue sur Darts-Games</h1>
+        <h1 id="titre"></h1>
     </div>
-
-    <nav>
-        <button data-page="accueil">Accueil</button>
-        <button data-page="profil">Profil</button>
-        <button data-page="contact">Contact</button>
-    </nav>
-
+    
     <main id="contenu">
         <!-- Le contenu chargé dynamiquement apparaîtra ici -->
     </main>
 
-
-
+    <script>
+        const isConnected = <?= json_encode($isConnected); ?>;
+    </script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="script.js"></script>
+    <script src="scripts/connexion.js"></script>
+    <script src="scripts/inscription.js"></script>
     <script>
         // Enregistrement du service worker
         if ('serviceWorker' in navigator) {
@@ -55,4 +59,17 @@
         }
     </script>
 </body>
+
+    <footer>
+        <nav id="menu_non_connecte" class="<?= $isConnected ? 'hidden' : '' ?>">
+            <button onclick="chargerContenu('connexion','Connexion')">Connexion</button>
+            <button onclick="chargerContenu('inscription','Inscription')">Inscription</button>
+        </nav>
+        <nav id="menu_connecte" class="<?= $isConnected ? '' : 'hidden' ?>">
+            <button onclick="chargerContenu('dashboard','Darts Board')">Dashboard</button>
+            <button onclick="chargerContenu('stats','Statistiques')">Statistiques</button>
+            <button onclick="deconnecter()">Déconnexion</button>
+        </nav>
+    </footer>
+
 </html>

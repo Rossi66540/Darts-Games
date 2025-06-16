@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Le mot de passe est correct, créer une session
             session_start();
             $_SESSION['pseudo'] = $user['pseudo'];
+            
 
             // Répondre avec succès et pseudo de l'utilisateur
             echo json_encode(["success" => true, "id" => $user['id'], "pseudo" => $user['pseudo']]);

@@ -1,5 +1,3 @@
-<h2>Inscription</h2>
-
 <form id="signupForm" >    
     <h1>Créer un compte</h1>
     <label>Nom : <input type="text" id="nom" name="nom" required></label><br>

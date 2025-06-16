@@ -1,3 +1,7 @@
+.hidden {
+    display: none !important;
+}
+
 /* ========== Comportement tactile mobile ========== */
 html,
 body {
@@ -436,4 +440,57 @@ label.saisie {
         font-size: 0.9rem;
         overflow-x: auto;
     }
+}
+
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px; /* petite hauteur adaptée mobile */
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+}
+
+footer nav {
+  display: flex;
+  flex-direction: row;       /* disposition horizontale */
+  justify-content: space-around;
+  align-items: center;
+  flex: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+body {
+  padding-bottom: 60px; /* pour éviter que le contenu soit masqué par le footer */
+}
+
+footer nav button {
+  background-color: #ffffff;
+  border: none;
+  color: #333;
+  font-size: 0.95em;
+  padding: 8px 14px;
+  margin: 0 4px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap; /* pour éviter les retours à la ligne */
+}
+
+footer nav button:hover {
+  background-color: #e6e6e6;
+}
+
+footer nav button:active {
+  background-color: #d0d0d0;
+  transform: scale(0.98);
 }
