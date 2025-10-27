@@ -1,10 +1,10 @@
+<div>
 <?php
 
-include 'config.php';
+include '../config.php';
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 $idUser = $_COOKIE['idUser'];
 
@@ -19,10 +19,8 @@ $reqPerso = "SELECT
     LEFT JOIN parties ON parties.type = jeu.id
     LEFT JOIN scores ON scores.id_partie = parties.id
 
-
     WHERE
-        scores.id_user = " . $idUser . "
-
+        scores.id_user = {$idUser}
     GROUP BY 
         jeu.id
     ";
@@ -70,83 +68,60 @@ if ($result) {
     echo "Erreur SQL : " . mysqli_error($mysqli);
 }
 
-
-function getTopJoueur($type)
-{
-
+function getTopJoueur($type){
     $DB_HOST = 'localhost';
-    $DB_USER = 'fvasnmcf_root';
+    
+    //$DB_USER = 'fvasnmcf_root';
     // $DB_PORT = 3306;
-    $DB_PASS = 'Darts66540!';
-    $DB_NAME = 'fvasnmcf_darts-games';
+    //$DB_PASS = 'Darts66540!';
+    //$DB_NAME = 'fvasnmcf_darts-games';
+
+    $DB_USER = 'root';
+    // $DB_PORT = 3306;
+    $DB_PASS = '';
+    $DB_NAME = 'darts_games';
 
     $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
     $req = "SELECT 
-    u.pseudo, 
-    s.total AS top, 
-    DATE_FORMAT(p.date, '%d/%m/%Y') AS date
-FROM 
-    scores s
-INNER JOIN parties p ON s.id_partie = p.id
-INNER JOIN jeu j ON p.type = j.id
-INNER JOIN user u ON s.id_user = u.id
-WHERE 
-    j.id = " . $type . "
-ORDER BY 
-    s.total DESC
-LIMIT 1";
+        u.pseudo, 
+        s.total AS top, 
+        DATE_FORMAT(p.date, '%d/%m/%Y') AS date
+    FROM 
+        scores s
+    INNER JOIN parties p ON s.id_partie = p.id
+    INNER JOIN jeu j ON p.type = j.id
+    INNER JOIN user u ON s.id_user = u.id
+    WHERE 
+        j.id = " . $type . "
+    ORDER BY 
+        s.total DESC
+    LIMIT 1";
 
+    //echo $req;
+    //die();
 
     $info = "";
     $result = mysqli_query($mysqli, $req);
 
     if ($result) {
         $row = mysqli_fetch_assoc($result);
-        $info = $row['pseudo'] . ' (' . $row['date'] . ')';
+        if ($row) {
+            $info = $row['pseudo'] . ' (' . $row['date'] . ')';
+        }else{
+            $info = "";
+        }
         mysqli_free_result($result);
     }
     return $info;
 }
 
-
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Darts-Games</title>
-    <link rel="stylesheet" href="./style/style.css" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-
-    <!-- Icône de l'application -->
-    <link rel="apple-touch-icon" href="favicon.ico">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-    <!-- Couleur de fond de la barre de statut -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Darts-Games">
-</head>
-
-
-
-<body>
-    <script src="./libs/jquery3.7.js"></script>
-
-
     <div id="statPerso">
-        <h1>Stats</h1>
-
-
+        <h1 id="titre"></h1>
 
         <select id="selectUser" onChange='chargeStat()'>
-
         </select>
 
         <table class="tableStat" id="tbStatPerso">
@@ -160,7 +135,7 @@ LIMIT 1";
                 </tr>
             </thead>
             <tbody>
-                
+
             </tbody>
         </table>
     </div>
@@ -194,7 +169,7 @@ LIMIT 1";
         var nomUser = getCookie("session");
         var idUser = "<?= $idUser ?>";
 
-         function getCookie(name) {
+        function getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
@@ -207,13 +182,13 @@ LIMIT 1";
 
 
         function genererSelect(idUser) {
-
             $('#selectUser').empty();
             $.ajax({
-                url: '/models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
+                url: './models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    console.log(data);
                     let options = "";
                     options += '<option value=""> - - - </option>';
                     data.forEach(function(user) {
@@ -224,9 +199,8 @@ LIMIT 1";
                         options += '<option value="' + user.id + '" data-id="' + user.id + '" ' + selected + '>' + user.pseudo + '</option>';
                     });
                     $('#selectUser').append(options);
-
-                }
-            });
+                }, 
+                            });
         }
 
         function chargeStat() {
@@ -234,11 +208,11 @@ LIMIT 1";
             console.log(idUser);
             $('#tbStatPerso tbody').empty();
             $.ajax({
-                url: '/models/get_stat_perso.php',
+                url: './models/get_stat_perso.php',
                 type: 'GET',
                 data: {
                     idUser: idUser
-                }, 
+                },
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
@@ -266,6 +240,4 @@ LIMIT 1";
     </script>
 
 
-
-
-</body>
+</div>

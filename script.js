@@ -13,7 +13,8 @@ $(document).ready(function () {
   // Navigation
   $('nav button').on('click', function () {
     let page = $(this).data('page');
-    chargerContenu(page);
+    let titre = $(this).data('titre'); 
+    chargerContenu(page,titre);
   });
 
 });
@@ -29,11 +30,14 @@ function afficherMenuSelonConnexion() {
 }
 
   function chargerContenu(page,titre) { 
+    console.log('laaaaa');
+    console.log(page);
     $('#contenu').html('<p>Chargement...</p>');
     $.ajax({
       url: 'contenus/' + page + '.php',
       method: 'GET',
       success: function (data) {
+        console.log(data);
         $('#contenu').html(data);
         $('#titre').html(titre);
         afficherMenuSelonConnexion(); // Met à jour les menus à chaque chargement de contenu

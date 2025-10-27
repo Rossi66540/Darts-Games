@@ -1,7 +1,6 @@
+        <h1 id="titre"></h1>
         <label for="games-list">
-            Je vous propose différents jeux de fléchettes afin que vous n'ayez plus besoin de tenir les comptes des
-            scores.
-        </label><br>
+            Je vous propose différents types jeux de fléchettes afin de vous faciliter la tenue des scores. </label><br>
 
         <ul id="games-list">
             <li>
@@ -24,14 +23,20 @@
                     Test Dev
                 </button>
             </li>
-            <li>
+            <!--<li>
                 <button class="buttonGeneral" style="min-width: 180px;background-color:lightgreen" onclick="window.location.href='stats.php';">
                     Statistiques
                 </button>
-            </li>
+            </li>-->
         </ul>
     </div>
-    <div id="piedPage" style="display:flex;">        
+    <!--<div id="piedPage" style="display:flex;">        
         <button class="buttonMini" onclick="logout()">Déconnexion</button>
         <button class="buttonMini" onclick="viderCache()">Vider Cache</button>
-    </div>
+    </div>-->
+
+    <script>
+        afficherMenuSelonConnexion();
+    </script>
+
+

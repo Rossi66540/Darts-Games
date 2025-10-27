@@ -54,7 +54,7 @@ $stmt->close();
 // }
 
 // Crée le lien de réinitialisation
-$lien = "https://www.darts-games.infinityfreeapp.com/reset_mdp.php?token=" . $token;
+$lien = '';//"https://www.darts-games.infinityfreeapp.com/reset_mdp.php?token=" . $token;
 
 // Préparer l'email
 $to_email = $email;
@@ -65,7 +65,7 @@ $subject = "Réinitialisation de votre mot de passe";
 $body = "Bonjour,\n\nVoici le lien pour réinitialiser votre mot de passe :\n\n$lien\n\nCe lien expire dans 1 heure.";
 
 // Appel du script send_email.php via cURL
-$url = 'https://www.darts-games.infinityfreeapp.com/send_mail.php'; // URL de ton fichier PHP
+$url ='';//'https://www.darts-games.infinityfreeapp.com/send_mail.php'; // URL de ton fichier PHP
 $data = [
     'to_email'   => $to_email,
     'to_name'    => $to_name,

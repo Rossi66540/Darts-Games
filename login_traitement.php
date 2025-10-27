@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($mot_de_passe, $user['mdp'])) {
             // Le mot de passe est correct, créer une session
             session_start();
+            setcookie("idUser", $user['id'], time() + 24*60*60*1000, "/");            
             $_SESSION['pseudo'] = $user['pseudo'];
             
-
             // Répondre avec succès et pseudo de l'utilisateur
             echo json_encode(["success" => true, "id" => $user['id'], "pseudo" => $user['pseudo']]);
             

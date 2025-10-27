@@ -137,7 +137,7 @@ h1 {
 } */
 
 /* ========== Conteneurs principaux ========== */
-form,
+/* form, */
 #regle,
 #contenu,
 #divFin {
@@ -216,7 +216,7 @@ select {
 label {
     margin-bottom: 0.5rem;
     font-weight: bold;
-    color: white;
+    /* color: white; */
     display: block;
 }
 
@@ -386,7 +386,7 @@ label.saisie {
 /* ========== Responsive mobile ========== */
 @media (max-width: 480px) {
 
-    form,
+    /* form, */
     #entete,
     #regle,
     #contenu,
@@ -449,7 +449,8 @@ footer {
   left: 0;
   right: 0;
   height: 50px; /* petite hauteur adaptée mobile */
-  background-color: #f0f0f0;
+  /*background-color: #f0f0f0;*/
+  background-color: lightgreen;
   border-top: 1px solid #ccc;
   display: flex;
   justify-content: space-around;
@@ -470,7 +471,7 @@ footer nav {
 }
 
 body {
-  padding-bottom: 60px; /* pour éviter que le contenu soit masqué par le footer */
+  /*padding-bottom: 60px; /* pour éviter que le contenu soit masqué par le footer */
 }
 
 footer nav button {
