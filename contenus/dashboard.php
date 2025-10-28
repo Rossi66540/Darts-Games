@@ -19,6 +19,11 @@
                 </button>
             </li>
             <li>
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="chargerContenu('301','301')">
+                    301
+                </button>
+            </li>
+            <li>
                 <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage('kapital2.html')">
                     Test Dev
                 </button>

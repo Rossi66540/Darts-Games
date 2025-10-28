@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 
-    <link rel="stylesheet" href="./styleGenerique.css" />
+    <link rel="stylesheet" href="./style/styleGenerique.css" />
 
 
     <link rel="apple-touch-icon" href="favicon.png">
@@ -89,7 +89,6 @@
         <div id="divScore" style="flex-direction:column;">
             <div id="scorePossible">
                 <div class="scoreLigne">
-
                     <button class="buttonScore" onclick="saisieScore(1)">1</button>
                     <button class="buttonScore" onclick="saisieScore(2)">2</button>
                     <button class="buttonScore" onclick="saisieScore(3)">3</button>
@@ -300,7 +299,7 @@
                     indiceGagnant = index;
                 }
             });
-            resultats[indiceJoueurActuel]
+            resultats[indiceJoueurActuel];
 
             let idGagnant = joueurs[indiceGagnant];
 
@@ -351,8 +350,7 @@
             $('.buttonMode').removeClass('active');
             if (!isActif) {
                 $(btn).addClass('active');
-            }
-            
+            }            
         }
 
         function setScorePossible() {

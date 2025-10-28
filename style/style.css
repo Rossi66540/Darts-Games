@@ -495,3 +495,19 @@ footer nav button:active {
   background-color: #d0d0d0;
   transform: scale(0.98);
 }
+
+
+.columnFlex{
+    display:flex; 
+    flex-direction:column;
+}
+
+.rowFlex{
+    display:flex; 
+    flex-direction:row;
+}
+
+.lb_pseudo,
+.lb_score{
+    background-color: black;
+}

@@ -21,7 +21,7 @@
         <option value="4">501</option>
     </select>
 
-    <label>Nbr de Legs</label>
+    <label>Nbr de Sets</label>
     <select id="sl_leg">
         <option value="1">1</option>
         <option value="2">2</option>

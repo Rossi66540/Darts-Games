@@ -12,9 +12,10 @@ $isConnected = !empty($pseudo);
     <meta charset="UTF-8">
     <title>Accueil</title>
     <link rel="stylesheet" href="./style/style.css" />
+    <link rel="stylesheet" href="./style/styleX01.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="manifest" href="asset/manifest.json">
+    <link rel="manifest" href="/mono/asset/manifest.json">
 
     <!-- Icône de l'application -->
     <link rel="apple-touch-icon" href="favicon.ico">
@@ -23,7 +24,7 @@ $isConnected = !empty($pseudo);
 
     <!-- Couleur de fond de la barre de statut -->
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Darts-Games">
 
 </head>
@@ -43,6 +44,7 @@ $isConnected = !empty($pseudo);
 
     <script>
         var isConnected = <?= json_encode($isConnected); ?>;
+        var nomUser = getCookie("session");
     </script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="script.js"></script>
@@ -50,17 +52,17 @@ $isConnected = !empty($pseudo);
     <script src="scripts/inscription.js"></script>
     <script>
         // Enregistrement du service worker
-        /*if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').then(reg => {
                 console.log('Service Worker enregistré ✅');
             }).catch(err => {
                 console.error('Erreur SW:', err);
             });
-        }*/
+        }
     </script>
 </body>
 
-<footer>
+<footer id="footer_principal">
     <nav id="menu_non_connecte" class="<?= $isConnected ? 'hidden' : '' ?>">
         <!-- onclick="chargerContenu('connexion','Connexion')"    
         onclick="chargerContenu('inscription','Inscription')"-->
