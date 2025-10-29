@@ -49,7 +49,7 @@
 </div>
 
 <div id="tableau_jeu_x01">
-    <h3 id="infosPartie">301 Double Out Set#1</h3>
+    <h3 id="infosPartie" style="text-align: center; font-size: 40px; margin: 5px; padding: 0px;"></h3>
     <table id="table_301" class="table_x01">
         <thead>
             <tr style="width: 100%;">
@@ -65,11 +65,11 @@
     </table>
 </div>
 
-<div id="divProposition" class="scoreLigne">
+<div id="divProposition" class="rowFlex" style="justify-content: center;gap: 20px;">
 </div>
 
 <div id="divScore_x01" style="display:none;flex-direction:column;">
-    <div id="scorePossible">
+    <div id="scorePossible" style="margin-top:unset;">
         <div class="scoreLigne">
             <button class="buttonScoreX01" onclick="saisieScore(1)">1</button>
             <button class="buttonScoreX01" onclick="saisieScore(2)">2</button>
@@ -112,7 +112,7 @@
 <script>
     var debutScore = 301;
     var typeFinish;
-    
+
 
     var joueurs = [];
 
@@ -129,7 +129,7 @@
 
     var resultats = [];
     var resultatsSets = [];
-
+    var idGagnant = null;
 
     // var totaux = [];
 
@@ -184,6 +184,7 @@
     function afficheInfosJoueurs(indiceSet, indiceTour) {
         $('#table_301 tbody').empty();
         let firstToSet = false;
+        
         joueurs.forEach(function(infoJoueur) {
             let trSelect = "";
             if (idJoueurActuel == infoJoueur.id) {
@@ -193,6 +194,7 @@
 
             let scoreRestant = debutScore - calculScoreFait(setActuel, indiceJoueur);
             infoJoueur.score = scoreRestant;
+
 
             let html = "<tr class='" + trSelect + "'>";
             html += "<td> <div class='columnFlex'><label class='lb_pseudo'>" + infoJoueur.pseudo + "</label> <label class='lb_score'>" + infoJoueur.score + "</label> </div></td>";
@@ -227,6 +229,24 @@
             html += "</tr>";
             $('#table_301 tbody').append(html);
         });
+
+
+        let joueurActuel = joueurs[indiceJoueurActuel];
+        console.log(joueurActuel);
+        let isDouble = (typeFinish == "2") ? true : false;
+
+        let finish = getPossibleFinish(joueurActuel.score, isDouble, 4 - indiceFlechette);
+        console.log(finish);
+        $('#divProposition').empty();
+        if (finish) {
+            finish.forEach(function(f) {
+                let html = "<label style='font-size:30px;margin-bottom:unset;'>" + f + "</label>";
+                $('#divProposition').append(html);
+            });
+        }
+                
+        $('#infosPartie').html(debutScore+" "+$('#sl_out option:selected').text()+" First To "+$('#sl_leg').val()+" / Set#"+(indiceSet+1));
+
     }
 
     function setMode(value, btn) {
@@ -281,7 +301,6 @@
                     burst = true;
                 }
             } else {
-                console.log("iciii");
                 finSet = true;
             }
         } else {
@@ -295,9 +314,15 @@
             resultatsSets[setActuel] = joueurs[indiceJoueurActuel].id;
 
             let idGagnantPartie = verifFinPartie();
-            console.log("FIN DE GAME ? " + idGagnantPartie)
             if (idGagnantPartie) {
+                idGagnant = idGagnantPartie;
                 console.log("FIN DE PARTIE A CODER  !!!!!!");
+                savePartie();
+                alert('FIN DE LA PARTIE !');
+                cacheDivSaisiePossible();
+                $('#divFin').show();
+
+
             } else {
                 setActuel++;
                 tourActuel = 0;
@@ -473,5 +498,49 @@
         }
 
         return totalFait;
+    }
+
+    function savePartie() {
+        let type = 3;
+        let nbrJoueur = joueurs.length;
+        let maxScore = 0;
+        let indiceGagnant = -1;
+
+        let detailScores = [];
+        joueurs.forEach(function(joueur, index) {
+            let scoreJoueur = {
+                id_user: joueur,
+                total: totaux[index],
+                place: "1",
+                details: resultats[index]
+            };
+            detailScores.push(scoreJoueur);
+        });
+
+        let dataToSend = {
+            type: type,
+            nbr_joueur: nbrJoueur,
+            id_gagnant: idGagnant,
+            scores: totaux,
+            resultats: detailScores // tableau des scores
+        };
+
+        // Appel AJAX en POST vers /save_parties.php
+        fetch('/save_partie_x01.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // On envoie du JSON
+                },
+                body: JSON.stringify(dataToSend)
+            })
+            .then(response => response.json()) // On attend une réponse JSON (à adapter si ce n'est pas JSON)
+            .then(data => {
+                console.log('Partie sauvegardée avec succès:', data);
+                // ici tu peux gérer la suite après sauvegarde
+            })
+            .catch(error => {
+                console.error('Erreur lors de la sauvegarde:', error);
+            });
+
     }
 </script>

@@ -50,6 +50,7 @@ $isConnected = !empty($pseudo);
     <script src="script.js"></script>
     <script src="scripts/connexion.js"></script>
     <script src="scripts/inscription.js"></script>
+    <script src="scripts/tools.js"></script>
     <script>
         // Enregistrement du service worker
         if ('serviceWorker' in navigator) {
