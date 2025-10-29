@@ -55,7 +55,8 @@
 
         <ul id="games-list">
             <li>
-                <button class="buttonGeneral" style="min-width: 180px;" onclick="window.location.href='horloge_compte.html';">
+                <button class="buttonGeneral" style="min-width: 180px;"
+                    onclick="window.location.href='horloge_compte.html';">
                     Horloge Comptée
                 </button>
             </li>
@@ -70,7 +71,7 @@
                 </button>
             </li>
             <li>
-                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage('301.php');">
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage('301.php','301.js');">
                     301
                 </button>
             </li>
@@ -80,27 +81,28 @@
                 </button>
             </li>
             <li>
-                <button class="buttonGeneral" style="min-width: 180px;background-color:lightgreen" onclick="window.location.href='stats.php';">
+                <button class="buttonGeneral" style="min-width: 180px;background-color:lightgreen"
+                    onclick="window.location.href='stats.php';">
                     Statistiques
                 </button>
             </li>
         </ul>
     </div>
-    <div id="piedPage" style="display:flex;">        
+    <div id="piedPage" style="display:flex;">
         <button class="buttonMini" onclick="logout()">Déconnexion</button>
         <button class="buttonMini" onclick="viderCache()">Vider Cache</button>
     </div>
 
-    <script src="js/sessionCheck.js"></script>
+    <!--<script src="js/sessionCheck.js"></script>-->
 
     <script>
 
         function viderCache() {
             caches.keys().then(names => {
                 return Promise.all(names.map(name => caches.delete(name)));
-              }).then(() => {
+            }).then(() => {
                 location.reload(true);
-              });
+            });
         }
 
         document.getElementById("pseudo").innerText = getCookie("session");
@@ -110,14 +112,31 @@
             window.location.href = "index.html";
         }
 
-        function loadPage(url) {
-  fetch(url)
-    .then(response => response.text())
-    .then(html => {
-      document.body.innerHTML = html;
-      history.pushState({}, '', url);
-    });
-}
+        function loadPage(url, urlJs) {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    // Remplacer le body ou un conteneur spécifique
+                    document.body.innerHTML = html;
+
+                    // Charger le JS externe si fourni
+                    if (urlJs) {
+                        const fullPath = `./scripts/${urlJs}`;
+
+                        // Vérifier si le script n'est pas déjà chargé
+                        if (!document.querySelector(`script[src="${fullPath}"]`)) {
+                            const script = document.createElement('script');
+                            script.src = fullPath;
+                            script.async = false; // exécution après le HTML
+                            document.body.appendChild(script);
+                        }
+                    }
+
+                    // Mettre à jour l'URL sans recharger la page
+                    history.pushState({}, '', url);
+                })
+                .catch(err => console.error('Erreur de chargement de la page :', err));
+        }
     </script>
 </body>
 
