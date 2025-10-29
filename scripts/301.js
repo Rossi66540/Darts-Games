@@ -1,41 +1,41 @@
 // x01.js
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     // === Modal règles ===
-    $('#modalRegles .close, #modalRegles button.buttonGeneral').on('click', function() {
+    $('#modalRegles .close, #modalRegles button.buttonGeneral').on('click', function () {
         cacherRegles();
     });
 
     // === Config X01 ===
-    $('#sl_out').on('change', function() {
+    $('#sl_out').on('change', function () {
         setTypeFinish();
     });
 
-    $('#nbJrs').on('keyup', function() {
+    $('#nbJrs').on('keyup', function () {
         genererTableauNom($(this).val(), 'tableJoueurs');
     });
 
-    $('#config_301 button.buttonGeneral').on('click', function() {
+    $('#config_301 button.buttonGeneral').on('click', function () {
         lancerPartie();
     });
 
     // === Boutons Score ===
-    $('#divScore_x01 .buttonScoreX01').each(function() {
-        $(this).on('click', function() {
+    $('#divScore_x01 .buttonScoreX01').each(function () {
+        $(this).on('click', function () {
             let valeur = parseInt($(this).text()) || 25; // 'B' vaut 25
             saisieScore(valeur);
         });
     });
 
-    $('#divScore_x01 .buttonMode').each(function() {
-        $(this).on('click', function() {
+    $('#divScore_x01 .buttonMode').each(function () {
+        $(this).on('click', function () {
             let mode = $(this).text() === 'Double' ? 2 : 3;
             setMode(mode, this);
         });
     });
 
-    $('#divScore_x01 .buttonCancel').on('click', function() {
+    $('#divScore_x01 .buttonCancel').on('click', function () {
         annulerScore();
     });
 
@@ -442,11 +442,21 @@ function savePartie() {
 
     let detailScores = [];
     joueurs.forEach(function (joueur, index) {
+        let resultatsPrecis = [];
+
+        for (let s = 0; s < resultats.length; s++) {           // Tous les sets
+            const set = resultats[s];
+            if (!set) continue;                                // Si le set n'existe pas
+            const joueurSet = set[indiceJoueurActuel] || [];   // Récupère uniquement le joueur courant
+            resultatsPrecis.push(joueurSet);                    // Ajoute ce set au tableau final
+        }
+
         let scoreJoueur = {
             id_user: joueur,
-            total: totaux[index],
             place: "1",
-            details: resultats[index]
+            nbr_set_gagne: 0,
+            min_flechette_gagnante : 0, 
+            details: resultatsPrecis
         };
         detailScores.push(scoreJoueur);
     });
@@ -455,7 +465,9 @@ function savePartie() {
         type: type,
         nbr_joueur: nbrJoueur,
         id_gagnant: idGagnant,
-        scores: totaux,
+        scores: [],
+        nbr_set: nbrSetGagnant,
+        type_finish: typeFinish,
         resultats: detailScores // tableau des scores
     };
 

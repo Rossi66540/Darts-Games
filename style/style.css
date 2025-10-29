@@ -457,3 +457,18 @@ label.saisie {
     grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
   }
 }
+
+.columnFlex{
+    display:flex; 
+    flex-direction:column;
+}
+
+.rowFlex{
+    display:flex; 
+    flex-direction:row;
+}
+
+.lb_pseudo,
+.lb_score{
+    background-color: black;
+}
