@@ -41,8 +41,9 @@
     }
 
     #divCancel button {
-        min-height: 70px;
+        /* min-height: 70px;*/
         box-sizing: border-box;
+        margin-top:unset;
     }
 
     .buttonScore {
@@ -130,7 +131,7 @@
         <h3>Nouvelle Partie:</h3>
 
         <label>Nombre Joueurs :</label>
-        <input id="nbJrs" style="width:60px;" type="text" onchange="genererTableauNom()" />
+        <input id="nbJrs" style="width:60px;" type="text" oninput="genererTableauNom()" />
 
         <table id="tableJoueurs">
             <tbody></tbody>
@@ -160,19 +161,17 @@
             </div>
             <div id="divCancel">
                 <button class='buttonScore' onclick='saisieScore(0)' style="grid-column: span 1;">0</button>
+                <!-- <button id="btMode_1" style="grid-column: span 2;" class="buttonMode active" data-action="1"
+                    onclick="setMode(this,)">Simple</button> #}-->
+                <button id="btMode_2" style="grid-column: span 2;padding:unset;" class="buttonMode buttonScore" data-action="2"
+                    onclick="setMode(this,2)">Double</button>
+                <button id="btMode_3" style="grid-column: span 2;padding:unset;" class="buttonMode buttonScore" data-action="3"
+                    onclick="setMode(this,3)">Triple</button>
 
-
-                <button id="btMode_1" style="grid-column: span 2;" class="buttonMode active" data-action="1"
-                    onclick="setMode(1)">Simple</button>
-                <button id="btMode_2" style="grid-column: span 2;" class="buttonMode" data-action="2"
-                    onclick="setMode(2)">Double</button>
-                <button id="btMode_3" style="grid-column: span 2;" class="buttonMode" data-action="3"
-                    onclick="setMode(3)">Triple</button>
-
-
-                <button style="background-color:red;grid-column: span 1;" onclick="annulerScore()">
+                <button style="background-color:red;grid-column: span 1;" class="buttonScore" onclick="annulerScore()">
                     <i class="fa-solid fa-rotate-left"></i>
                 </button>
+
             </div>
         </div>
     </div>
@@ -214,7 +213,7 @@
             $('#tableJoueurs').empty();
 
             $.ajax({
-                url: '/models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
+                url: './models/get_users.php', // <-- ce fichier doit retourner un JSON de type [{id_user: 1, pseudo: "Alice"}, ...]
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -381,13 +380,22 @@
         }
 
 
-        function setMode(value) {
-            modeActuel = value;
-
+        function setMode(button,value) {
+            if(button == null){
+                modeActuel = value;
+                $('.buttonMode').removeClass('active');
+            }else{
+                console.log($(button).hasClass('active'));
+                if($(button).hasClass('active')){                    
+                    modeActuel = 1;
+                    $(button).removeClass('active');
+                }else{
+                    $(button).addClass('active');
+                    modeActuel = value;
+                }
+            }
             // Désélectionner tous les boutons d'action
-            $('.buttonMode').removeClass('active');
-            $('#btMode_' + value).addClass('active');
-
+            //$('#btMode_' + value).addClass('active');
         }
 
         function setScorePossible() {
@@ -654,7 +662,7 @@
                 indiceFlechette++;
             }
 
-            setMode(1); //retour au simple automatique
+            setMode(null,1); //retour au simple automatique
         }
 
         function setCaseSuivante() {
@@ -789,7 +797,7 @@
             // Mise à jour des labels de score (lb_1, lb_2, lb_3) déjà faite un peu plus haut
 
             // Remettre le mode sur Simple par défaut (1)
-            setMode(1);
+            setMode(null,1);
         }
 
 

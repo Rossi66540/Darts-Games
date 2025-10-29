@@ -427,7 +427,7 @@ label.saisie {
 
     #divCancel button {
         width: 60px;
-        height: 60px;
+        /* height: 60px; */
         font-size: 1.2rem;
     }
 
@@ -436,4 +436,24 @@ label.saisie {
         font-size: 0.9rem;
         overflow-x: auto;
     }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 360px) {
+  #scorePossible {
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 6px;
+  }
+
+  .buttonScore {
+    font-size: 1rem;
+    padding: 0.6rem 0;
+  }
+}
+
+/* Pour les téléphones ultra étroits (moins de 300px) */
+@media (max-width: 300px) {
+  #scorePossible {
+    grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+  }
 }
