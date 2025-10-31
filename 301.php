@@ -23,7 +23,7 @@
 
 
     <div id="config_301">
-        <label>Nbr de Sets Gagnants </label>
+        <label>Nbr de Sets Gagnants : </label>
         <select id="sl_leg">
             <option value="1">1</option>
             <option value="2">2</option>

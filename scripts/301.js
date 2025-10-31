@@ -72,7 +72,7 @@ var objectifActuel = -1; //CORRECT
 
 // var scoreEncours = 0;
 
-function lancerPartie() {
+function lancerPartie() {    
     affichageModePartie();
     $('#tableau_jeu_x01').show();
     $('#config_301').hide();
@@ -99,10 +99,10 @@ function lancerPartie() {
                 id: id_user,
                 pseudo: pseudo,
                 score: debutScore,
-                lance: ["", "", ""],
-                moyenne: 0,
+                lance: ["", "", ""],                
+                infos:[]
             });
-        }
+        }        
     });
 
     // Mélange aléatoirement les joueurs (algorithme de Fisher-Yates)
@@ -128,7 +128,11 @@ function afficheInfosJoueurs(indiceSet, indiceTour) {
 
         let scoreRestant = debutScore - calculScoreFait(setActuel, indiceJoueur);
         infoJoueur.score = scoreRestant;
-
+        infoJoueur.infos = [];
+        infoJoueur.infos.push("Set Gagné : "+getNombreSetGagnes(infoJoueur.id));
+        infoJoueur.infos.push("Moyenne : "+calculMoyenneJoueur(setActuel,indiceJoueur));
+              
+        
 
         let html = "<tr class='" + trSelect + "'>";
         html += "<td> <div class='columnFlex'><label class='lb_pseudo'>" + infoJoueur.pseudo + "</label> <label class='lb_score'>" + infoJoueur.score + "</label> </div></td>";
@@ -159,7 +163,16 @@ function afficheInfosJoueurs(indiceSet, indiceTour) {
             html += "</div>";
         }
         html += "</div></td>";
-        html += "<td>" + infoJoueur.moyenne + "</td>";
+        html += "<td><div class='columnFlex'>";
+        
+        let infos = infoJoueur.infos;
+        if(infos){
+            infos.forEach(function(info){
+                html +="<label>"+info+"</label>";
+            });
+        }         
+
+        html += "</div></td>";
         html += "</tr>";
         $('#table_301 tbody').append(html);
     });
@@ -307,82 +320,81 @@ function saisieScore(valeur) {
 }
 
 function annulerScore() {
-    // === Cas début de partie : rien à annuler ===
-    if (!resultats[setActuel] || (indiceFlechette === 1 && indiceJoueurActuel === 0 && tourActuel === 0)) {
-        console.log("Aucun score à annuler.");
+    let setToCheck = setActuel;
+
+    // Cherche le dernier set où il y a eu des lancers
+    while (setToCheck >= 0 && (!resultats[setToCheck] || Object.keys(resultats[setToCheck]).length === 0)) {
+        setToCheck--;
+    }
+
+    if (setToCheck < 0) {
+        console.log("🚫 Aucun score à annuler.");
         return;
     }
 
-    // === Étape 1 : reculer d'une fléchette ===
-    indiceFlechette--;
-    if (indiceFlechette < 1) {
-        // on était à la première fléchette du joueur
-        indiceFlechette = 3;
-        indiceJoueurActuel--;
+    setActuel = setToCheck;
 
-        if (indiceJoueurActuel < 0) {
-            // on était au premier joueur → reculer d’un tour
-            indiceJoueurActuel = joueurs.length - 1;
-            if (tourActuel > 0) {
-                tourActuel--;
-            } else {
-                // début de partie
-                tourActuel = 0;
-                indiceFlechette = 1;
-                indiceJoueurActuel = 0;
-                console.log("Aucun score à annuler (début de partie).");
-                return;
+    // Trouver le dernier tour joué dans ce set (max de tous les tours de tous les joueurs)
+    let maxTour = -1;
+    let dernierJoueur = null;
+
+    Object.keys(resultats[setActuel]).forEach(j => {
+        let tours = Object.keys(resultats[setActuel][j]).map(k => parseInt(k));
+        let maxJoueur = Math.max(...tours);
+        if (maxJoueur > maxTour) {
+            maxTour = maxJoueur;
+        }
+    });
+
+    tourActuel = maxTour;
+
+    // Trouver le joueur ayant joué la dernière fléchette dans ce tour
+    let joueursSet = Object.keys(resultats[setActuel]);
+    for (let j of joueursSet) {
+        let lastTourData = resultats[setActuel][j][tourActuel];
+        if (lastTourData && Object.keys(lastTourData).length > 0) {
+            let maxFlechette = Math.max(...Object.keys(lastTourData).map(k => parseInt(k)));
+            if (dernierJoueur === null || maxFlechette > indiceFlechette) {
+                dernierJoueur = parseInt(j);
+                indiceFlechette = maxFlechette;
             }
         }
     }
 
-    // === Étape 2 : récupérer la fléchette à annuler ===
-    let flechette = resultats?.[setActuel]?.[indiceJoueurActuel]?.[tourActuel]?.[indiceFlechette];
+    indiceJoueurActuel = dernierJoueur;
 
-    if (!flechette) {
-        console.log("Aucune fléchette à annuler à cet emplacement.");
-        return;
-    }
+    console.log(`Annulation : Set ${setActuel}, Joueur ${indiceJoueurActuel}, Tour ${tourActuel}, Fléchette ${indiceFlechette}`);
 
-    let mode = flechette[0];
-    let valeur = parseInt(flechette[1]);
-
-    // === Étape 3 : supprimer la fléchette ===
+    // Supprimer la fléchette
     delete resultats[setActuel][indiceJoueurActuel][tourActuel][indiceFlechette];
-    console.log(`Annulé : Set ${setActuel}, Joueur ${indiceJoueurActuel}, Tour ${tourActuel}, Fléchette ${indiceFlechette}`);
 
-    // === Étape 4 : gérer burst ===
-    let restant = debutScore - calculScoreFait(setActuel, indiceJoueurActuel);
-    if (restant > 0 && flechette[0] * valeur < 0) {
-        // Si le dernier score annulé était un burst, rétablir le joueur
-        // Ici tu peux remettre l'état normal si besoin
-        // (dans notre modèle, le joueur va rejouer normalement)
+    // Nettoyage : si le tour est vide, on le supprime
+    if (Object.keys(resultats[setActuel][indiceJoueurActuel][tourActuel]).length === 0) {
+        delete resultats[setActuel][indiceJoueurActuel][tourActuel];
+    }
+    // Si le joueur n'a plus de tour, on le supprime du set
+    if (Object.keys(resultats[setActuel][indiceJoueurActuel]).length === 0) {
+        delete resultats[setActuel][indiceJoueurActuel];
     }
 
-    // === Étape 5 : gérer fin de set / fin de partie ===
-    // Si cette fléchette annulée avait fait gagner le set
-    let scoreApresAnnulation = debutScore - calculScoreFait(setActuel, indiceJoueurActuel);
-    if (scoreApresAnnulation > 0 && resultatsSets[setActuel] === joueurs[indiceJoueurActuel].id) {
-        resultatsSets[setActuel] = null; // annuler le set gagné
-        console.log("Set annulé !");
+    // Si ce joueur avait gagné le set, annuler le gagnant
+    if (resultatsSets[setActuel] === joueurs[indiceJoueurActuel].id) {
+        console.log("⚠️ Set annulé !");
+        resultatsSets[setActuel] = null;
     }
 
-    // Vérifie si la partie était finie et doit être réactivée
-    let gagnantPartie = verifFinPartie();
-    if (!gagnantPartie) {
-        // Partie non finie après annulation
-        finPartie = false;
-    }
+    // Recalculer les scores
+    joueurs.forEach((j, idx) => j.score = debutScore - calculScoreFait(setActuel, idx));
+    idGagnant = verifFinPartie();
 
-    // === Étape 6 : mettre à jour le score du joueur et l'affichage ===
-    joueurs[indiceJoueurActuel].score = debutScore - calculScoreFait(setActuel, indiceJoueurActuel);
-
-    // Affichage mis à jour
+    // Mise à jour de l'affichage et reset du mode
     afficheInfosJoueurs(setActuel, tourActuel);
-
-    // Reset du mode
     setMode(1);
 }
+
+
+
+
 
 function verifFinPartie() {
     // Compte des sets gagnés par joueur
@@ -432,6 +444,56 @@ function calculScoreFait(indiceSet, indiceJoueur) {
     }
 
     return totalFait;
+}
+
+function calculMoyenneJoueur(indiceSet, indiceJoueur) {
+    // Vérifie que le set et le joueur existent
+    if (!resultats[indiceSet] || !resultats[indiceSet][indiceJoueur]) {
+        return 0;
+    }
+
+    let totalPoints = 0;
+    let nbFlechettes = 0;
+
+    let dataJoueur = resultats[indiceSet][indiceJoueur];
+
+    // Parcourt tous les tours du joueur
+    for (let tour in dataJoueur) {
+        let dataTour = dataJoueur[tour];
+
+        // Parcourt les 3 fléchettes du tour
+        for (let i = 1; i <= 3; i++) {
+            let flechette = dataTour[i];
+            if (flechette && flechette.length === 2) {
+                let mode = flechette[0];
+                let valeur = parseInt(flechette[1]);
+                if (!isNaN(valeur) && valeur > 0) {
+                    totalPoints += mode * valeur;
+                    nbFlechettes++;
+                }
+            }
+        }
+    }
+
+    if (nbFlechettes === 0) return 0;
+
+    let moyenne = totalPoints / nbFlechettes;
+    return Math.round(moyenne * 100) / 100; // arrondi à 2 décimales
+}
+
+function getNombreSetGagnes(idJoueur) {
+    if (!resultatsSets || resultatsSets.length === 0) {
+        return 0;
+    }
+
+    let nbSets = 0;
+    resultatsSets.forEach(function(idGagnant){
+        if (idGagnant === idJoueur) {
+            nbSets++;
+        }
+    });
+
+    return nbSets;
 }
 
 function savePartie() {
