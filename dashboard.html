@@ -73,15 +73,30 @@
                 </button>
             </li>
             <li>
-                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage('301.php','301.js');">
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage2('X01.php','X01.js',101,3);">
+                    101
+                </button>
+            </li>
+            <li>
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage2('X01.php','X01.js',301,4);">
                     301
                 </button>
             </li>
             <li>
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage2('X01.php','X01.js',501,5);">
+                    501
+                </button>
+            </li>
+            <li>
+                <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage2('X01.php','X01.js',701,6);">
+                    701
+                </button>
+            </li>
+            <!-- <li>
                 <button class="buttonGeneral" style="min-width: 180px;" onclick="loadPage('kapital2.html')">
                     Test Dev
                 </button>
-            </li>
+            </li> -->
             <li>
                 <button class="buttonGeneral" style="min-width: 180px;background-color:lightgreen"
                     onclick="window.location.href='stats.php';">
@@ -91,8 +106,8 @@
         </ul>
     </div>
     <div id="piedPage" style="display:flex;">
-        <button class="buttonMini" onclick="logout()">Déconnexion</button>
-        <button class="buttonMini" onclick="viderCache()">Vider Cache</button>
+        <button class="buttonMini" style="width:auto;" onclick="logout()">Déconnexion</button>
+        <button class="buttonMini" style="width:auto;" onclick="viderCache()">Vider Cache</button>
     </div>
 
     <!--<script src="js/sessionCheck.js"></script>-->
@@ -139,6 +154,37 @@
                 })
                 .catch(err => console.error('Erreur de chargement de la page :', err));
         }
+
+        function loadPage2(url, urlJs,scoreObj,idTypeJeu) {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    // Remplacer le body ou un conteneur spécifique
+                    document.body.innerHTML = html;
+
+                    window.debutScore = scoreObj;
+                    window.type = idTypeJeu;
+                    
+                    // Charger le JS externe si fourni
+                    if (urlJs) {
+                        const fullPath = `./scripts/${urlJs}`;
+
+                        // Vérifier si le script n'est pas déjà chargé
+                        if (!document.querySelector(`script[src="${fullPath}"]`)) {
+                            const script = document.createElement('script');
+                            script.src = fullPath;
+                            script.async = false; // exécution après le HTML
+                            document.body.appendChild(script);
+                        }
+                    }
+
+                    // Mettre à jour l'URL sans recharger la page
+                    history.pushState({}, '', url);
+                })
+                .catch(err => console.error('Erreur de chargement de la page :', err));
+        }
+
+        
     </script>
 </body>
 

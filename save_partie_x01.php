@@ -9,22 +9,23 @@ $data = json_decode($json, true);
 $type_jeu = $data['type'] ?? null;
 $id_gagnant = $data['id_gagnant'] ?? null;
 $nbr_joueur = $data['nbr_joueur'] ?? null;
-$scores = $data['scores'] ?? [];
+$nbr_set = $data['nbr_set'] ?? null;
+$type_finish = $data['type_finish'] ?? null;
 $resultats = $data['resultats'];
 
 $date_partie = date('Y-m-d H:i:s');
 
 // Enregistrer la partie
 $stmt_partie = $mysqli->prepare("
-    INSERT INTO parties (nb_joueurs,type,date,id_gagnant)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO parties (nb_joueurs,type,date,id_gagnant,nbr_set,type_finish)
+    VALUES (?, ?, ?, ?,? ,? )
 ");
 
 if (!$stmt_partie) {
     die("Erreur préparation partie : " . $mysqli->error);
 }
 
-$stmt_partie->bind_param("issi", $nbr_joueur, $type_jeu, $date_partie, $id_gagnant);
+$stmt_partie->bind_param("iisiii", $nbr_joueur, $type_jeu, $date_partie, $id_gagnant,$nbr_set,$type_finish);
 
 if (!$stmt_partie->execute()) {
     die("Erreur insertion partie : " . $stmt_partie->error);
@@ -35,8 +36,8 @@ $stmt_partie->close();
 
 // Préparer l'insertion des scores
 $stmt_score = $mysqli->prepare("
-    INSERT INTO scores (id_partie, id_user, total, place, details)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO score_x01 (id_partie, id_user, nb_set_gagne,is_gagnant,min_flechette,info,place)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
 ");
 
 if (!$stmt_score) {
@@ -45,13 +46,18 @@ if (!$stmt_score) {
 
 // Enregistrer tous les scores
 foreach ($resultats as $score) {
+
+    $jsonDetails = json_encode($score['details']);
+
     $stmt_score->bind_param(
-        "iiiis",
+        "iiiissi",
         $id_partie,
         $score['id_user'],
-        $score['total'],
+        $score['nbr_set_gagne'],
+        $score['is_gagnant'],
+        $score['min_flechette_gagnante'],        
+        $jsonDetails,
         $score['place'],
-        json_encode($score['details'])
     );
 
     if (!$stmt_score->execute()) {

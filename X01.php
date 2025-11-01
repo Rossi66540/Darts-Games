@@ -22,7 +22,7 @@
     </style>
 
 
-    <div id="config_301">
+    <div id="config_X01">
         <label>Nbr de Sets Gagnants : </label>
         <select id="sl_leg">
             <option value="1">1</option>
@@ -52,7 +52,7 @@
 
     <div id="tableau_jeu_x01" style="display:none;">
         <h3 id="infosPartie" style="text-align: center; font-size: 40px; margin: 5px; padding: 0px;"></h3>
-        <table id="table_301" class="table_x01">
+        <table id="table_X01" class="table_x01">
             <thead>
                 <tr style="width: 100%;">
                     <td style="width: 20%;"> Nom </td>
@@ -108,6 +108,10 @@
                 </button>
             </div>
         </div>
+    </div>
+
+    <div id="divFin" class="hide">
+        <button class="buttonGeneral" onclick="window.location.href='index.html'"> Retour à l'accueil </button>        
     </div>
 
 </main>

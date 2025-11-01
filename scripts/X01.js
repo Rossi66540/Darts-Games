@@ -16,7 +16,7 @@ $(document).ready(function () {
         genererTableauNom($(this).val(), 'tableJoueurs');
     });
 
-    $('#config_301 button.buttonGeneral').on('click', function () {
+    $('#config_X01 button.buttonGeneral').on('click', function () {
         lancerPartie();
     });
 
@@ -42,8 +42,7 @@ $(document).ready(function () {
 });
 
 
-
-var debutScore = 301;
+//var debutScore = 301;
 var typeFinish;
 
 
@@ -72,10 +71,10 @@ var objectifActuel = -1; //CORRECT
 
 // var scoreEncours = 0;
 
-function lancerPartie() {    
+function lancerPartie() {
     affichageModePartie();
     $('#tableau_jeu_x01').show();
-    $('#config_301').hide();
+    $('#config_X01').hide();
     $('#divScore_x01').show();
 
     nbrSetGagnant = $('#sl_leg').val();
@@ -99,10 +98,10 @@ function lancerPartie() {
                 id: id_user,
                 pseudo: pseudo,
                 score: debutScore,
-                lance: ["", "", ""],                
-                infos:[]
+                lance: ["", "", ""],
+                infos: []
             });
-        }        
+        }
     });
 
     // Mélange aléatoirement les joueurs (algorithme de Fisher-Yates)
@@ -116,7 +115,7 @@ function lancerPartie() {
 }
 
 function afficheInfosJoueurs(indiceSet, indiceTour) {
-    $('#table_301 tbody').empty();
+    $('#table_X01 tbody').empty();
     let firstToSet = false;
 
     joueurs.forEach(function (infoJoueur) {
@@ -129,10 +128,10 @@ function afficheInfosJoueurs(indiceSet, indiceTour) {
         let scoreRestant = debutScore - calculScoreFait(setActuel, indiceJoueur);
         infoJoueur.score = scoreRestant;
         infoJoueur.infos = [];
-        infoJoueur.infos.push("Set Gagné : "+getNombreSetGagnes(infoJoueur.id));
-        infoJoueur.infos.push("Moyenne : "+calculMoyenneJoueur(setActuel,indiceJoueur));
-              
-        
+        infoJoueur.infos.push("Set Gagné : " + getNombreSetGagnes(infoJoueur.id));
+        infoJoueur.infos.push("Moyenne : " + calculMoyenneJoueur(setActuel, indiceJoueur));
+
+
 
         let html = "<tr class='" + trSelect + "'>";
         html += "<td> <div class='columnFlex'><label class='lb_pseudo'>" + infoJoueur.pseudo + "</label> <label class='lb_score'>" + infoJoueur.score + "</label> </div></td>";
@@ -164,17 +163,17 @@ function afficheInfosJoueurs(indiceSet, indiceTour) {
         }
         html += "</div></td>";
         html += "<td><div class='columnFlex'>";
-        
+
         let infos = infoJoueur.infos;
-        if(infos){
-            infos.forEach(function(info){
-                html +="<label>"+info+"</label>";
+        if (infos) {
+            infos.forEach(function (info) {
+                html += "<label>" + info + "</label>";
             });
-        }         
+        }
 
         html += "</div></td>";
         html += "</tr>";
-        $('#table_301 tbody').append(html);
+        $('#table_X01 tbody').append(html);
     });
 
 
@@ -215,6 +214,10 @@ function setMode(value, btn) {
 
 function setTypeFinish() {
     typeFinish = $('#sl_out').val();
+}
+
+function cacheDivSaisiePossible() {
+    $('#divScore_x01').hide();
 }
 
 function saisieScore(valeur) {
@@ -394,8 +397,6 @@ function annulerScore() {
 
 
 
-
-
 function verifFinPartie() {
     // Compte des sets gagnés par joueur
     let scoreSets = {};
@@ -487,7 +488,7 @@ function getNombreSetGagnes(idJoueur) {
     }
 
     let nbSets = 0;
-    resultatsSets.forEach(function(idGagnant){
+    resultatsSets.forEach(function (idGagnant) {
         if (idGagnant === idJoueur) {
             nbSets++;
         }
@@ -496,8 +497,57 @@ function getNombreSetGagnes(idJoueur) {
     return nbSets;
 }
 
-function savePartie() {
-    let type = 3;
+function getMinNbFlechetteGagnante(idJoueur) {
+    let minF = Infinity;
+
+    for (let s = 0; s < resultats.length; s++) {
+        if (resultatsSets[s] !== idJoueur) continue; // set gagné par lui sinon skip
+
+        let idxJ = joueurs.findIndex(j => j.id == idJoueur);
+        if (idxJ < 0) continue;
+
+        let nb = 0;
+        let score = debutScore;
+
+        let set = resultats[s][idxJ];
+        if (!set) continue;
+
+        // parcours tours → fléchettes
+        for (let tour in set) {
+            let dataTour = set[tour];
+
+            for (let i = 1; i <= 3; i++) {
+                let flechette = dataTour[i];
+                if (!flechette) continue;
+
+                let mode = flechette[0];
+                let valeur = parseInt(flechette[1]) || 0;
+
+                nb++; // 1 fléchette lancée
+                score -= (mode * valeur);
+
+                if (score == 0) {
+                    // fin du leg
+                    if (typeFinish == "2" && mode != 2) {
+                        // pas double ⇒ pas valide ⇒ il burst
+                        // donc ce set ne compte pas
+                        nb = Infinity;
+                    }
+                    i = 4; // sortir des boucles
+                    break;
+                }
+                if (score < 0) break;
+            }
+            if (score <= 0) break;
+        }
+
+        if (nb < minF) minF = nb;
+    }
+
+    return (minF === Infinity ? 0 : minF);
+}
+
+function savePartie() {    
     let nbrJoueur = joueurs.length;
     let maxScore = 0;
     let indiceGagnant = -1;
@@ -508,17 +558,23 @@ function savePartie() {
 
         for (let s = 0; s < resultats.length; s++) {           // Tous les sets
             const set = resultats[s];
-            if (!set) continue;                                // Si le set n'existe pas
-            const joueurSet = set[indiceJoueurActuel] || [];   // Récupère uniquement le joueur courant
+            if (!set) continue;                                 // Si le set n'existe pas
+            const joueurSet = set[index] || [];                 // Récupère uniquement le joueur courant
             resultatsPrecis.push(joueurSet);                    // Ajoute ce set au tableau final
         }
 
+        let isGagnant = false;
+        if(joueur.id == idGagnant){
+            isGagnant = true;
+        }
+
         let scoreJoueur = {
-            id_user: joueur,
-            place: "1",
-            nbr_set_gagne: 0,
-            min_flechette_gagnante : 0, 
-            details: resultatsPrecis
+            id_user: joueur.id,
+            nbr_set_gagne: getNombreSetGagnes(joueur.id),
+            is_gagnant: isGagnant,
+            min_flechette_gagnante: getMinNbFlechetteGagnante(joueur.id),
+            details: resultatsPrecis,
+            place: "1"
         };
         detailScores.push(scoreJoueur);
     });
@@ -526,15 +582,14 @@ function savePartie() {
     let dataToSend = {
         type: type,
         nbr_joueur: nbrJoueur,
-        id_gagnant: idGagnant,
-        scores: [],
+        id_gagnant: idGagnant,        
         nbr_set: nbrSetGagnant,
         type_finish: typeFinish,
         resultats: detailScores // tableau des scores
     };
 
     // Appel AJAX en POST vers /save_parties.php
-    fetch('/save_partie_x01.php', {
+    fetch('./save_partie_x01.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json' // On envoie du JSON
