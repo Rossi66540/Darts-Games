@@ -12,18 +12,33 @@ $(document).ready(function () {
         setTypeFinish();
     });
 
-    $('#nbJrs').on('keyup', function () {
-        genererTableauNom($(this).val(), 'tableJoueurs');
+    // input blur
+    $('#nbJrs').on('change', function () {
+        genererTableauNom($(this).val(), 'tableJoueurs');       
     });
 
     $('#config_X01 button.buttonGeneral').on('click', function () {
         lancerPartie();
     });
 
+
+
     // === Boutons Score ===
     $('#divScore_x01 .buttonScoreX01').each(function () {
         $(this).on('click', function () {
-            let valeur = parseInt($(this).text()) || 25; // 'B' vaut 25
+            let valeur = 0;
+            //console.log($(this).text());
+            if ($(this).text() == "B") {
+                valeur = 25;
+            }else{
+                if ($(this).text() == 0) {
+                    valeur = 0;
+                } else {
+                    valeur = parseInt($(this).text());
+                }
+            }
+
+            //let valeur = parseInt($(this).text()) || 25; // 'B' vaut 25
             saisieScore(valeur);
         });
     });
@@ -547,7 +562,7 @@ function getMinNbFlechetteGagnante(idJoueur) {
     return (minF === Infinity ? 0 : minF);
 }
 
-function savePartie() {    
+function savePartie() {
     let nbrJoueur = joueurs.length;
     let maxScore = 0;
     let indiceGagnant = -1;
@@ -564,7 +579,7 @@ function savePartie() {
         }
 
         let isGagnant = false;
-        if(joueur.id == idGagnant){
+        if (joueur.id == idGagnant) {
             isGagnant = true;
         }
 
@@ -582,14 +597,14 @@ function savePartie() {
     let dataToSend = {
         type: type,
         nbr_joueur: nbrJoueur,
-        id_gagnant: idGagnant,        
+        id_gagnant: idGagnant,
         nbr_set: nbrSetGagnant,
         type_finish: typeFinish,
         resultats: detailScores // tableau des scores
     };
 
     // Appel AJAX en POST vers /save_parties.php
-    fetch('./save_partie_x01.php', {
+    fetch('/save_partie_x01.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json' // On envoie du JSON

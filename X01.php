@@ -41,13 +41,24 @@
         </select>
 
         <label>Nombre Joueurs :</label>
-        <input id="nbJrs" style="width:60px;" type="number" />
+        <input id="nbJrs" type="number"  inputmode="numeric" pattern="\d*" style="width:60px;">
+        <!-- <select id="nbJrs" style="width:60px;">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+        </select>
+
+        <button id="btn_generation">Générer Tableau Nom</button> -->
 
         <table id="tableJoueurs">
             <tbody></tbody>
         </table>
 
-        <CENTER><button class="buttonGeneral"> LANCER PARTIE </button></CENTER>
+        <CENTER><button id="btn_lancement" class="buttonGeneral"> LANCER PARTIE </button></CENTER>
     </div>
 
     <div id="tableau_jeu_x01" style="display:none;">
