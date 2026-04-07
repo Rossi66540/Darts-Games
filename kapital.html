@@ -76,8 +76,8 @@
             <p>Le principe du jeu est le suivant : à un ou plusieurs joueurs, il y a 15 objectifs à chaque partie, qui
                 se joue en une seule volée :</p>
 
-            <p>Les 15 objectifs sont : le 20, le côte à côte, le 19, la suite, le 18, la couleur, le 17, le double, le
-                16, le triple, le 15, le 57, le 14 et le centre.</p>
+            <p>Les 15 objectifs sont : le 20, le triple, le 19, le double, le 18, la suite, le 17, le Cote a Cote, le
+                16, la couleur, le 15, le 57, le 14 et le centre.</p>
 
 
             <p>Le gagnant est celui qui, à la fin de la partie, a le score le plus élevé.</p>
@@ -191,7 +191,7 @@
 
         var nomUser = getCookie("session");
         var scorePossible = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, "B"];
-        var objectif = [20, "Cote", 19, "Suite", 18, "Couleur", 17, "Double", 16, "Triple", 15, 57, 14, "B"];
+        var objectif = [20, "Triple", 19, "Double", 18, "Suite", 17, "Cote", 16,"Couleur", 15, 57, 14, "B"];
 
         var joueurs = [];
         var resultats = [];
@@ -530,6 +530,58 @@
                     break;
 
                 case 1:
+                    if (modeActuel == 3) {
+                        scoreEncours += (modeActuel) * valeur;
+                       flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break; 
+                    
+
+                case 2:
+                    if (valeur == 19) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 3:
+                    if (modeActuel == 2) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;                  
+
+                case 4:
+                    if (valeur == 18) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 5:
+                     if (indiceFlechette == 3) {
+                        if (isSuite(flechettes[indiceJoueurActuel][objectifActuel])) {
+                            let totalFait = 0;
+                            for (i = 1; i <= 3; i++) {
+                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
+                            }
+                            scoreEncours = totalFait;
+                        } else {
+                            scoreEncours = 0;
+                        }
+                    }
+                    break;
+                    
+
+                case 6:
+                    if (valeur == 17) {
+                        scoreEncours += (modeActuel) * valeur;
+                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
+                    }
+                    break;
+
+                case 7: {
+                    //COTE A COTE
                     if (indiceFlechette == 3) {
                         if (isCoteACote(flechettes[indiceJoueurActuel][objectifActuel])) {
                             let totalFait = 0;
@@ -542,36 +594,17 @@
                         }
                     }
                     break;
-
-                case 2:
-                    if (valeur == 19) {
+                    
+                }
+                case 8:
+                    if (valeur == 16) {
                         scoreEncours += (modeActuel) * valeur;
                         flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
                     }
                     break;
 
-                case 3:
-                    if (indiceFlechette == 3) {
-                        if (isSuite(flechettes[indiceJoueurActuel][objectifActuel])) {
-                            let totalFait = 0;
-                            for (i = 1; i <= 3; i++) {
-                                totalFait += flechettes[indiceJoueurActuel][objectifActuel][i][0] * flechettes[indiceJoueurActuel][objectifActuel][i][1];
-                            }
-                            scoreEncours = totalFait;
-                        } else {
-                            scoreEncours = 0;
-                        }
-                    }
-                    break;
-
-                case 4:
-                    if (valeur == 18) {
-                        scoreEncours += (modeActuel) * valeur;
-                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
-                    }
-                    break;
-
-                case 5:
+                case 9:
+                    //couleur
                     if (indiceFlechette == 3) {
                         if (isCouleurDifférente(flechettes[indiceJoueurActuel][objectifActuel])) {
                             let totalFait = 0;
@@ -584,35 +617,7 @@
                         }
                     }
                     break;
-
-                case 6:
-                    if (valeur == 17) {
-                        scoreEncours += (modeActuel) * valeur;
-                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
-                    }
-                    break;
-
-                case 7: {
-                    if (modeActuel == 2) {
-                        scoreEncours += (modeActuel) * valeur;
-                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
-                    }
-                    break;
-                }
-                case 8:
-                    if (valeur == 16) {
-                        scoreEncours += (modeActuel) * valeur;
-                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
-                    }
-                    break;
-
-                case 9:
-                    if (modeActuel == 3) {
-                        scoreEncours += (modeActuel) * valeur;
-                        flechettes[indiceJoueurActuel][objectifActuel][indiceFlechette] = [modeActuel, valeur];
-                    }
-                    break;
-
+                    
                 case 10:
                     if (valeur == 15) {
                         scoreEncours += (modeActuel) * valeur;

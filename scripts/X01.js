@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     // input blur
     $('#nbJrs').on('change', function () {
-        genererTableauNom($(this).val(), 'tableJoueurs');       
+        genererTableauNom($(this).val(), 'tableJoueurs');
     });
 
     $('#config_X01 button.buttonGeneral').on('click', function () {
@@ -30,7 +30,7 @@ $(document).ready(function () {
             //console.log($(this).text());
             if ($(this).text() == "B") {
                 valeur = 25;
-            }else{
+            } else {
                 if ($(this).text() == 0) {
                     valeur = 0;
                 } else {
@@ -143,8 +143,8 @@ function afficheInfosJoueurs(indiceSet, indiceTour) {
         let scoreRestant = debutScore - calculScoreFait(setActuel, indiceJoueur);
         infoJoueur.score = scoreRestant;
         infoJoueur.infos = [];
-        infoJoueur.infos.push("Set Gagné : " + getNombreSetGagnes(infoJoueur.id));
-        infoJoueur.infos.push("Moyenne : " + calculMoyenneJoueur(setActuel, indiceJoueur));
+        infoJoueur.infos.push("Sets: " + getNombreSetGagnes(infoJoueur.id));
+        infoJoueur.infos.push("Moyenne: " + calculMoyenneJoueur(setActuel, indiceJoueur));
 
 
 
@@ -338,9 +338,11 @@ function saisieScore(valeur) {
 }
 
 function annulerScore() {
-    let setToCheck = setActuel;
+    // Sauvegarde du set d'origine pour savoir si on revient d'un set précédent
+    const originalSet = setActuel;
 
-    // Cherche le dernier set où il y a eu des lancers
+    // 1) Trouver le dernier set non vide (à partir de setActuel)
+    let setToCheck = setActuel;
     while (setToCheck >= 0 && (!resultats[setToCheck] || Object.keys(resultats[setToCheck]).length === 0)) {
         setToCheck--;
     }
@@ -350,65 +352,190 @@ function annulerScore() {
         return;
     }
 
+    // On travaille sur ce set
     setActuel = setToCheck;
 
-    // Trouver le dernier tour joué dans ce set (max de tous les tours de tous les joueurs)
+    // 2) Trouver le dernier tour présent dans ce set
     let maxTour = -1;
-    let dernierJoueur = null;
-
-    Object.keys(resultats[setActuel]).forEach(j => {
-        let tours = Object.keys(resultats[setActuel][j]).map(k => parseInt(k));
-        let maxJoueur = Math.max(...tours);
-        if (maxJoueur > maxTour) {
-            maxTour = maxJoueur;
+    Object.keys(resultats[setActuel]).forEach(jKey => {
+        let tours = Object.keys(resultats[setActuel][jKey] || {}).map(k => parseInt(k)).filter(x => !isNaN(x));
+        if (tours.length) {
+            let maxJ = Math.max(...tours);
+            if (maxJ > maxTour) maxTour = maxJ;
         }
     });
 
+    if (maxTour === -1) {
+        // pas de tour (très improbable vu la recherche du set non vide) : fallback
+        console.log("Aucun tour trouvé dans le set détecté.");
+        return;
+    }
+
     tourActuel = maxTour;
 
-    // Trouver le joueur ayant joué la dernière fléchette dans ce tour
-    let joueursSet = Object.keys(resultats[setActuel]);
-    for (let j of joueursSet) {
-        let lastTourData = resultats[setActuel][j][tourActuel];
-        if (lastTourData && Object.keys(lastTourData).length > 0) {
-            let maxFlechette = Math.max(...Object.keys(lastTourData).map(k => parseInt(k)));
-            if (dernierJoueur === null || maxFlechette > indiceFlechette) {
-                dernierJoueur = parseInt(j);
-                indiceFlechette = maxFlechette;
-            }
+    // 3) Dans ce tour, trouver le joueur qui a la fléchette la plus élevée (la dernière fléchette jouée)
+    let dernierJoueurKey = null; // clé telle qu'elle est utilisée dans resultats[set] (doit correspondre à indice joueur)
+    let derniereFlechette = -1;
+
+    Object.keys(resultats[setActuel]).forEach(jKey => {
+        const dataTour = resultats[setActuel][jKey][tourActuel];
+        if (!dataTour) return;
+        const fleches = Object.keys(dataTour).map(k => parseInt(k)).filter(x => !isNaN(x));
+        if (!fleches.length) return;
+        const maxF = Math.max(...fleches);
+        if (maxF > derniereFlechette) {
+            derniereFlechette = maxF;
+            dernierJoueurKey = parseInt(jKey);
         }
+    });
+
+    if (dernierJoueurKey === null) {
+        console.log("Aucune fléchette trouvée dans le tour détecté.");
+        return;
     }
 
-    indiceJoueurActuel = dernierJoueur;
+    // 4) Supprimer cette dernière fléchette
+    delete resultats[setActuel][dernierJoueurKey][tourActuel][derniereFlechette];
 
-    console.log(`Annulation : Set ${setActuel}, Joueur ${indiceJoueurActuel}, Tour ${tourActuel}, Fléchette ${indiceFlechette}`);
-
-    // Supprimer la fléchette
-    delete resultats[setActuel][indiceJoueurActuel][tourActuel][indiceFlechette];
-
-    // Nettoyage : si le tour est vide, on le supprime
-    if (Object.keys(resultats[setActuel][indiceJoueurActuel][tourActuel]).length === 0) {
-        delete resultats[setActuel][indiceJoueurActuel][tourActuel];
+    // Nettoyage : si le tour devient vide, supprimer le tour
+    if (Object.keys(resultats[setActuel][dernierJoueurKey][tourActuel] || {}).length === 0) {
+        delete resultats[setActuel][dernierJoueurKey][tourActuel];
     }
-    // Si le joueur n'a plus de tour, on le supprime du set
-    if (Object.keys(resultats[setActuel][indiceJoueurActuel]).length === 0) {
-        delete resultats[setActuel][indiceJoueurActuel];
+    // si le joueur n'a plus de tours dans ce set, le retirer du set
+    if (Object.keys(resultats[setActuel][dernierJoueurKey] || {}).length === 0) {
+        delete resultats[setActuel][dernierJoueurKey];
     }
 
-    // Si ce joueur avait gagné le set, annuler le gagnant
-    if (resultatsSets[setActuel] === joueurs[indiceJoueurActuel].id) {
-        console.log("⚠️ Set annulé !");
+    // Si le set était marqué gagné par ce joueur, annuler
+    const idJoueurSupprime = joueurs[dernierJoueurKey] ? joueurs[dernierJoueurKey].id : null;
+    if (idJoueurSupprime && resultatsSets[setActuel] === idJoueurSupprime) {
         resultatsSets[setActuel] = null;
     }
 
-    // Recalculer les scores
+    // 5) Déterminer la nouvelle position (setActuel, tourActuel, indiceJoueurActuel, indiceFlechette)
+    //   Cas principal : si on a supprimé une fléchette > 1 => on reste sur le même joueur et on recule d'une fléchette.
+    if (derniereFlechette > 1) {
+        // revenir d'une fléchette (3->2, 2->1)
+        indiceJoueurActuel = dernierJoueurKey;
+        indiceFlechette = derniereFlechette - 1;
+        // tourActuel et setActuel restent tels quels
+    } else {
+        // dernièreFlechette === 1
+        // règle : revenir au joueur précédent et positionner la fléchette à 3
+        // précédent en ordre de jeu (cercle) :
+        let prevPlayerIdx = (dernierJoueurKey - 1 + joueurs.length) % joueurs.length;
+
+        // On cherche la dernière présence du prevPlayer (dans setActuel..0)
+        let foundPrev = false;
+        let prevSetFound = setActuel;
+        let prevTourFound = -1;
+        for (let s = setActuel; s >= 0 && !foundPrev; s--) {
+            if (!resultats[s]) continue;
+            const pdata = resultats[s][prevPlayerIdx];
+            if (!pdata) continue;
+            const toursPrev = Object.keys(pdata).map(k => parseInt(k)).filter(x => !isNaN(x));
+            if (!toursPrev.length) continue;
+            prevTourFound = Math.max(...toursPrev);
+            prevSetFound = s;
+            foundPrev = true;
+            break;
+        }
+
+        if (foundPrev) {
+            // positionner sur ce joueur précédent ; on met la fléchette à 3 (prochaine insertion remplira la 3)
+            setActuel = prevSetFound;
+            tourActuel = prevTourFound;
+            indiceJoueurActuel = prevPlayerIdx;
+            indiceFlechette = 3;
+        } else {
+            // le joueur précédent n'a aucune fléchette (aucun historique) :
+            // on place le prev player dans le même set/tour courant en position fléchette=3
+            indiceJoueurActuel = prevPlayerIdx;
+            // si le tour courant existe on garde tourActuel sinon on calcule
+            // on laisse tourActuel tel quel (ou 0 si absent)
+            if (tourActuel < 0) tourActuel = 0;
+            indiceFlechette = 3;
+        }
+    }
+
+    // 6) Si on a supprimé la dernière fléchette du set et qu'il n'y a plus rien dans ce set,
+    //    il est possible que setActuel doive descendre — on laisse la logique suivante recalculer les scores et l'affichage.
+    //    (setActuel a déjà été fixé sur le dernier set non vide initialement).
+
+    // 7) Recalcul des scores et maj de l'affichage
     joueurs.forEach((j, idx) => j.score = debutScore - calculScoreFait(setActuel, idx));
     idGagnant = verifFinPartie();
 
-    // Mise à jour de l'affichage et reset du mode
+    console.log(`Annulation : Set ${setActuel}, Joueur ${indiceJoueurActuel}, Tour ${tourActuel}, Fléchette ${indiceFlechette}`);
+
     afficheInfosJoueurs(setActuel, tourActuel);
     setMode(1);
 }
+
+
+function getDernierTour(setVoulu){
+    if (!resultats[setVoulu]) return null;
+
+    let maxTour = -1;
+    Object.keys(resultats[setActuel]).forEach(jKey => {
+        let tours = Object.keys(resultats[setActuel][jKey] || {}).map(k => parseInt(k)).filter(x => !isNaN(x));
+        if (tours.length) {
+            let maxJ = Math.max(...tours);
+            if (maxJ > maxTour) maxTour = maxJ;
+        }
+    });
+
+    return maxTour;
+    
+
+}
+
+function infoDerniereFlechetteSet(setVoulu){
+    if (!resultats[setVoulu]) return null;
+
+    let indiceJoueurCherche;
+    let indiceTourCherche;
+    let flechetteCherche;
+
+    
+
+    return [indiceJoueurCherche,indiceTourCherche,flechetteCherche];
+}
+
+function trouverInfoFlechePrecedente() {
+
+    // on part de la position courante
+    let setCherche = setActuel;
+    let indiceJoueurCherche = indiceJoueurActuel;
+    let tourCherche = tourActuel;
+    let flechetteCherche = indiceFlechette; 
+
+    if(indiceFlechette == 1){
+        if(tourActuel == 0){
+            if(indiceJoueurActuel == 0){
+                if(setActuel != 0){
+                    setCherche = setActuel - 1;
+                    indiceJoueurCherche = 
+                    tourCherche = 
+                    flechetteCherche = 
+                }else{
+
+                }
+            }
+
+        }else{
+
+
+        }
+    }else{
+        flechetteCherche--;
+    }
+
+
+    
+    return [setCherche,indiceJoueurCherche,tourCherche,flechetteCherche]; // aucune flèche trouvée (début de partie)
+}
+
 
 
 

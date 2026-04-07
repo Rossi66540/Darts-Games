@@ -43,7 +43,7 @@ if ($result) {
 $reqGlobal = "SELECT
         jeu.id as type,
         jeu.nom, 
-        count(distinct parties.id) as joues,                
+        count(parties.id) as joues,                
         MAX(IFNULL(scores.total,0)) as top
 
     FROM    
